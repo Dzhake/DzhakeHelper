@@ -34,7 +34,7 @@ public class SequenceSwapBlock : SequenceBlock
         {
             Vector2 position = new Vector2(block.moveRect.X, block.moveRect.Y) + block.blockOffset;
             for (int i = 1; i <= block.blockHeight; ++i)
-                if ((Engine.Scene as Level).IsInBounds(position))
+                if ((Engine.Scene as Level).IsInCamera(position,8))
                     DrawTarget(position + (Vector2.UnitY * i), pathColorPressed);
             DrawTarget(position, block.Collidable ? pathColor : pathColorPressed);
 
@@ -353,33 +353,33 @@ public class SequenceSwapBlock : SequenceBlock
     {
         int tilesX = (int)(width / 8f);
         int tilesY = (int)(height / 8f);
-        if ((Engine.Scene as Level).IsInBounds(pos + new Vector2(0f, 0f)))
+        if ((Engine.Scene as Level).IsInCamera(pos + new Vector2(0f, 0f), 8))
             ninSlice[0, 0].Draw(pos + new Vector2(0f, 0f), Vector2.Zero, color);
-        if ((Engine.Scene as Level).IsInBounds(pos + new Vector2(width - 8f, 0f)))
+        if ((Engine.Scene as Level).IsInCamera(pos + new Vector2(width - 8f, 0f) ,8))
             ninSlice[2, 0].Draw(pos + new Vector2(width - 8f, 0f), Vector2.Zero, color);
-        if ((Engine.Scene as Level).IsInBounds(pos + new Vector2(0f, height - 8f)))
+        if ((Engine.Scene as Level).IsInCamera(pos + new Vector2(0f, height - 8f), 8))
             ninSlice[0, 2].Draw(pos + new Vector2(0f, height - 8f), Vector2.Zero, color);
-        if ((Engine.Scene as Level).IsInBounds(pos + new Vector2(width - 8f, height - 8f)))
+        if ((Engine.Scene as Level).IsInCamera(pos + new Vector2(width - 8f, height - 8f), 8))
             ninSlice[2, 2].Draw(pos + new Vector2(width - 8f, height - 8f), Vector2.Zero, color);
         for (int i = 1; i < tilesX - 1; i++)
         {
-            if ((Engine.Scene as Level).IsInBounds(pos + new Vector2(i * 8, 0f)))
+            if ((Engine.Scene as Level).IsInCamera(pos + new Vector2(i * 8, 0f), 8))
                 ninSlice[1, 0].Draw(pos + new Vector2(i * 8, 0f), Vector2.Zero, color);
-            if ((Engine.Scene as Level).IsInBounds(pos + new Vector2(i * 8, height - 8f)))
+            if ((Engine.Scene as Level).IsInCamera(pos + new Vector2(i * 8, height - 8f), 8))
                 ninSlice[1, 2].Draw(pos + new Vector2(i * 8, height - 8f), Vector2.Zero, color);
         }
         for (int j = 1; j < tilesY - 1; j++)
         {
-            if ((Engine.Scene as Level).IsInBounds(pos + new Vector2(0f, j * 8)))
+            if ((Engine.Scene as Level).IsInCamera(pos + new Vector2(0f, j * 8), 8))
                 ninSlice[0, 1].Draw(pos + new Vector2(0f, j * 8), Vector2.Zero, color);
-            if ((Engine.Scene as Level).IsInBounds(pos + new Vector2(width - 8f, j * 8)))
+            if ((Engine.Scene as Level).IsInCamera(pos + new Vector2(width - 8f, j * 8), 8))
                 ninSlice[2, 1].Draw(pos + new Vector2(width - 8f, j * 8), Vector2.Zero, color);
         }
         for (int k = 1; k < tilesX - 1; k++)
         {
             for (int l = 1; l < tilesY - 1; l++)
             {
-                if ((Engine.Scene as Level).IsInBounds(pos + new Vector2(k, l) * 8f))
+                if ((Engine.Scene as Level).IsInCamera(pos + new Vector2(k, l) * 8f, 8))
                     ninSlice[1, 1].Draw(pos + (new Vector2(k, l) * 8f), Vector2.Zero, color);
             }
         }
