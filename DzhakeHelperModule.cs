@@ -1,5 +1,5 @@
 ﻿using System;
-//////
+
 namespace Celeste.Mod.DzhakeHelper {
     public class DzhakeHelperModule : EverestModule {
         public static DzhakeHelperModule Instance;
