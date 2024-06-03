@@ -34,8 +34,7 @@ public class SequenceSwapBlock : SequenceBlock
         {
             Vector2 position = new Vector2(block.moveRect.X, block.moveRect.Y) + block.blockOffset;
             for (int i = 1; i <= block.blockHeight; ++i)
-                if ((Engine.Scene as Level).IsInCamera(position,8))
-                    DrawTarget(position + (Vector2.UnitY * i), pathColorPressed);
+                DrawTarget(position + (Vector2.UnitY * i), pathColorPressed);
             DrawTarget(position, block.Collidable ? pathColor : pathColorPressed);
 
         }
