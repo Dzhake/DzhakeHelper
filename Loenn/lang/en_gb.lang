@@ -80,6 +80,11 @@ entities.DzhakeHelper/VoidLift.attributes.description.sfx=Sfx to play when used,
 
 entities.DzhakeHelper/RainbowHairBadelineDummy.placements.name.normal=Rainbow Hair Badeline Dummy
 
+entities.DzhakeHelper/CustomKey.placements.name.normal=Custom Key
+entities.DzhakeHelper/CustomMoveBlock.attributes.description.doWobble=If checked, key will move around a bit.
+entities.DzhakeHelper/CustomMoveBlock.attributes.description.doWobble=Key can only open door with same group, unless key or door has "open any"/"opened by any" checked.
+
+entities.DzhakeHelper/CustomDoor.placements.name.normal=Custom Door
 
 # Triggers
 triggers.DzhakeHelper/CycleSequenceBlocksTrigger.placements.name.normal=Cycle Sequence Blocks
