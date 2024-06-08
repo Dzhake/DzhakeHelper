@@ -321,4 +321,39 @@ public static class Util
     {
         return ParseFlags(l, flags.Split(','),and_or);
     }
+
+
+    public static EntityData GenerateEntityData(Dictionary<string,object> data)
+    {
+        EntityData entityData = new EntityData();
+
+        if (data["_x"] != null) entityData.Position.X = (float)data["_x"];
+        if (data["_y"] != null)  entityData.Position.Y = (float)data["_y"];
+
+        if (data["_name"] != null) entityData.Name = (string)data["_name"];
+        if (data["_width"] != null) entityData.Width = (int)data["_width"];
+        if (data["_height"] != null) entityData.Height = (int)data["_height"];
+        if (data["_nodes"] != null)
+        {
+            entityData.Nodes = (Vector2[])data["_nodes"];
+        }
+        if (data["_id"] != null)
+        {
+            entityData.ID = (int)data["_id"];
+        }
+        else
+        {
+            entityData.ID = Util.random.Next(500, 9999);
+        }
+
+        entityData.Level = Util.GetLevel().Session.LevelData;
+
+        foreach (KeyValuePair<string,object> kvp in data)
+        {
+            if (kvp.Key is "_x" or "_y" or "_id" or "_name" or "_nodes" or "_width" or "_height") continue;
+            entityData.Values[kvp.Key] = kvp.Value;
+        }
+
+        return entityData;
+    }
 }

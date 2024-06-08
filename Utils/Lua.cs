@@ -54,46 +54,7 @@ namespace Celeste.Mod.DzhakeHelper.Utils
             DzhakeHelperModule.Session.StoredVariables.Remove(name);   
         }
 
-        //EntityData generation, which doesn't work, lmao, fuck lua
-        /*public static EntityData GenerateEntityData(LuaTable data)
-        {
-            Vector2 offset = Util.GetLevel().LevelOffset;
-            EntityData entityData = new EntityData();
-
-            //these really, REALLY should exist (but not for controllers)
-            if (data["_x"] != null) entityData.Position.X = (float)data["_x"];
-            if (data["_y"] != null)  entityData.Position.Y = (float)data["_y"];
-
-            //these may exist
-            if (data["_name"] != null) entityData.Name = (string)data["_name"];
-            if (data["_width"] != null) entityData.Width = (int)data["_width"];
-            if (data["_height"] != null) entityData.Height = (int)data["_height"];
-            if (data["_nodes"] != null)
-            {
-                entityData.Nodes = LuaNodesToVector2Array((LuaTable)data["_nodes"]);
-            }
-            if (data["_id"] != null)
-            {
-                entityData.ID = (int)data["_id"];
-            }
-            else
-            {
-                entityData.ID = Util.random.Next(500, 9999);
-            }
-
-            //these I set myself
-            entityData.Level = Util.GetLevel().Session.LevelData;
-
-            //these are everything else
-            foreach (KeyValuePair<string,object> kvp in data)
-            {
-                if (kvp.Key == "_x" || kvp.Key == "_y" || kvp.Key == "_id" || kvp.Key == "_name" || kvp.Key == "_nodes" || kvp.Key == "_width" || kvp.Key == "_width") continue;
-                entityData.Values[kvp.Key] = kvp.Value;
-            }
-
-            return entityData;
-        }*/
-
+        
 
         // https://github.com/Cruor/LuaCutscenes/blob/master/Helpers/LuaHelper.cs
 
@@ -125,18 +86,6 @@ namespace Celeste.Mod.DzhakeHelper.Utils
 
 
             return table;
-        }
-
-        public static Vector2[] LuaNodesToVector2Array(LuaTable table)
-        {
-            Vector2[] array = new Vector2[table.Keys.Count];
-            int i = 0;
-            foreach (Vector2 value in table.Values)
-            {
-                array[i] = value;
-                i++;
-            }
-            return array;
         }
         #endregion
 
