@@ -13,18 +13,8 @@ namespace Celeste.Mod.DzhakeHelper.Entities
     public class SequenceBlock : Solid
     {
 
-        private class BoxSide : Entity
+        private class BoxSide(SequenceBlock block, Color color) : Entity
         {
-            private SequenceBlock block;
-
-            private Color color;
-
-            public BoxSide(SequenceBlock block, Color color)
-            {
-                this.block = block;
-                this.color = color;
-            }
-
             public override void Render()
             {
                 if (block.BackgroundBlock)
@@ -315,16 +305,16 @@ namespace Celeste.Mod.DzhakeHelper.Entities
             base.Update();
             if (groupLeader && Activated && !Collidable)
             {
-                bool flag = false;
+                bool blocked = false;
                 foreach (SequenceBlock item in group)
                 {
                     if (item.BlockedCheck())
                     {
-                        flag = true;
+                        blocked = true;
                         break;
                     }
                 }
-                if (!flag)
+                if (!blocked)
                 {
                     foreach (SequenceBlock item2 in group)
                     {
