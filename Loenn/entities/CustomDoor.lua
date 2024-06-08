@@ -15,7 +15,8 @@ CustomDoor.placements = {
         particleColor1 = "FF3D63",
         particleColor2 = "FF75DE",
         unlockSfx = "event:/game/03_resort/key_unlock",
-        sprite = "objects/DzhakeHelper/customDoor/"
+        sprite = "objects/DzhakeHelper/customDoor/",
+        openedByVanillaKeys = true
     },
 }
 

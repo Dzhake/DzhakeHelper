@@ -3,9 +3,6 @@ using Microsoft.Xna.Framework;
 using System;
 using Monocle;
 using System.Collections;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using System.Drawing;
 
 namespace Celeste.Mod.DzhakeHelper.Entities
 {
@@ -28,12 +25,14 @@ namespace Celeste.Mod.DzhakeHelper.Entities
 
         public int Group;
         public bool OpenedByAny;
+        public bool OpenedByVanillaKeys;
 
         public CustomDoor(EntityData data, Vector2 offset, EntityID id)
             : base(data.Position + offset, 32f, 32f, safe: false)
         {
             stepMusicProgress = data.Bool("stepMusicProgress");
             OpenedByAny = data.Bool("openedByAny");
+            OpenedByVanillaKeys = data.Bool("openedByVanillaKeys", true);
             Group = data.Int("group");
             string spriteName = data.Attr("sprite", "objects/DzhakeHelper/customDoor/");
             unlockSfx = data.Attr("unlockSfx", "event:/game/03_resort/key_unlock");
@@ -89,7 +88,7 @@ namespace Celeste.Mod.DzhakeHelper.Entities
 
             foreach (Follower follower in player.Leader.Followers)
             {
-                if (follower.Entity is Key key && !key.StartedUsing)
+                if (follower.Entity is Key key && !key.StartedUsing && OpenedByVanillaKeys)
                 {
                     TryOpen(player, follower);
                     break;
