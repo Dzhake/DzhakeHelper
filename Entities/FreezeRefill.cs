@@ -63,7 +63,6 @@ namespace Celeste.Mod.DzhakeHelper.Entites
 
         public bool addDash;
         public bool dashStarted = false;
-        public Player player;
 
         private readonly Sprite sprite;
         private readonly Sprite flash;
@@ -134,7 +133,6 @@ namespace Celeste.Mod.DzhakeHelper.Entites
 
         public override void Update()
         {
-            player = SceneAs<Level>().Tracker.GetEntity<Player>();
             base.Update();
             if (respawnTimer > 0f)
             {
@@ -205,7 +203,7 @@ namespace Celeste.Mod.DzhakeHelper.Entites
 
         private IEnumerator RefillRoutine(Player player)
         {
-            Add(new Coroutine(FreezeDelay(player)));
+            Add(new Coroutine(FreezeDelay()));
 
             yield return null;
             level.Shake();
@@ -221,16 +219,16 @@ namespace Celeste.Mod.DzhakeHelper.Entites
             level.ParticlesFG.Emit(P_Shatter, 5, Position, Vector2.One * 4f, num - ((float)Math.PI / 2f));
             level.ParticlesFG.Emit(P_Shatter, 5, Position, Vector2.One * 4f, num + ((float)Math.PI / 2f));
             SlashFx.Burst(Position, num);
+        }
+
+        private IEnumerator FreezeDelay()
+        {
+            yield return delay;
+            Celeste.Freeze(freezeTime);
             if (oneUse)
             {
                 RemoveSelf();
             }
-        }
-
-        private IEnumerator FreezeDelay(Player player)
-        {
-            yield return delay;
-            Celeste.Freeze(freezeTime);
         }
     }
 }
