@@ -98,6 +98,7 @@ namespace Celeste.Mod.DzhakeHelper.Entities
                 {
                     AddTag(Tags.Global);
                     TryOpen(player,follower);
+                    break;
                 }
             }
         }
