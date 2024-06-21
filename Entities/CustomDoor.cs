@@ -138,7 +138,6 @@ namespace Celeste.Mod.DzhakeHelper.Entities
                 level.Session.Audio.Apply(forceSixteenthNoteHack: false);
             }
 
-            level.Session.DoNotLoad.Add(ID);
             if (key != null)
             {
                 key.RegisterUsed();
@@ -163,6 +162,7 @@ namespace Celeste.Mod.DzhakeHelper.Entities
             level.Shake();
             Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
             yield return sprite.PlayRoutine("burst");
+            level.Session.DoNotLoad.Add(ID);
             RemoveSelf();
         }
     }

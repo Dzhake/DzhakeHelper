@@ -180,7 +180,7 @@ namespace Celeste.Mod.DzhakeHelper.Entities
 
             if (!Temporary)
             {
-                AddTag(Tags.Global);
+                DzhakeHelperModule.Session.CurrentKeys.Add(this);
                 session.DoNotLoad.Add(ID);
             }
         }
@@ -208,10 +208,6 @@ namespace Celeste.Mod.DzhakeHelper.Entities
         
         public IEnumerator UseRoutine(Vector2 target)
         {
-            if (Temporary)
-            {
-                AddTag(Tags.Global);
-            }
             Turning = true;
             follower.MoveTowardsLeader = false;
             wiggler.Start();
@@ -261,6 +257,7 @@ namespace Celeste.Mod.DzhakeHelper.Entities
                 };
                 tween.OnComplete = delegate
                 {
+                    DzhakeHelperModule.Session.CurrentKeys.Remove(this);
                     RemoveSelf();
                 };
                 Add(tween);

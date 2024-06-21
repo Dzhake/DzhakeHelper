@@ -1,12 +1,13 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using System;
+using Celeste.Mod.DzhakeHelper.Entities;
 
 namespace Celeste.Mod.DzhakeHelper {
     public class DzhakeHelperModuleSession : EverestModuleSession {
         public bool HasSequenceDash { get; set; } = false;
 
-        public Dictionary<string, object> StoredVariables;
+        public Dictionary<string, object> StoredVariables = new();
 
         public float TimedKillTriggerTime { get; set; } = 0f;
 
@@ -18,5 +19,6 @@ namespace Celeste.Mod.DzhakeHelper {
 
         public int ActiveSequenceIndex;
 
+        public List<CustomKey> CurrentKeys { get; set; } = new();
     }
 }

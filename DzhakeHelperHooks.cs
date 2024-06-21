@@ -18,6 +18,7 @@ namespace Celeste.Mod.DzhakeHelper
             On.Celeste.Player.DashBegin += CustomDashBegin;
             On.Celeste.Player.Die += PlayerDeath;
             On.Celeste.Player.Update += PlayerUpdate;
+            Everest.Events.Player.OnSpawn += PlayerSpawn;
 
             IL.Celeste.Player.Render += PlayerRender;
         }
@@ -29,6 +30,8 @@ namespace Celeste.Mod.DzhakeHelper
             On.Celeste.Player.DashBegin -= CustomDashBegin;
             On.Celeste.Player.Die -= PlayerDeath;
             On.Celeste.Player.Update -= PlayerUpdate;
+            Everest.Events.Player.OnSpawn -= PlayerSpawn;
+
             IL.Celeste.Player.Render -= PlayerRender;
         }
 
@@ -115,6 +118,14 @@ namespace Celeste.Mod.DzhakeHelper
             return oldColor;
         }
 
+
+        private static void PlayerSpawn(Player self)
+        {
+            foreach (CustomKey key in DzhakeHelperModule.Session.CurrentKeys)
+            {
+                self.Leader.GainFollower(key.follower);
+            }
+        }
 
     }
 
