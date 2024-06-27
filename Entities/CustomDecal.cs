@@ -1,6 +1,8 @@
 ﻿using Celeste.Mod.Entities;
 using Microsoft.Xna.Framework;
 using Monocle;
+using System.IO;
+using System.Text.RegularExpressions;
 
 namespace Celeste.Mod.DzhakeHelper.Entities
 {
@@ -26,6 +28,7 @@ namespace Celeste.Mod.DzhakeHelper.Entities
         public Vector2 shakeOffset;
 
         public bool HD;
+        public bool RemoveDecalsFromPath;
 
         public static Entity Load(EntityData data, Vector2 offset)
         {
@@ -36,15 +39,19 @@ namespace Celeste.Mod.DzhakeHelper.Entities
               : new CustomDecal(data, offset);
         }
 
-        public CustomDecal(EntityData data, Vector2 offset) : this  (data.Position, offset, data.Attr("texture"), data.Int("depth"), data.HexColorWithAlpha("color"), new Vector2(data.Float("scaleX"),
-            data.Float("scaleY")), data.Float("rotation"), data.Attr("flags"),
-            data.Bool("updateSpriteOnlyIfFlag"), data.Bool("hiRes"), data.Enum("pathRoot", SpriteBank.Game), data.Bool("removeDecalsFromPath"))
+        public CustomDecal(EntityData data, Vector2 offset) : this(data.Position, offset, data.Attr("texture"),
+            data.Int("depth"), data.HexColorWithAlpha("color"), new Vector2(data.Float("scaleX"),
+                data.Float("scaleY")), data.Float("rotation"), data.Attr("flags"),
+            data.Bool("updateSpriteOnlyIfFlag"), data.Bool("hiRes"), data.Enum("pathRoot", SpriteBank.Game),
+            data.Bool("removeDecalsFromPath"))
         {}
+
 
         public CustomDecal(Vector2 position,Vector2 offset, string texture, int depth, Color color, Vector2 scale, float rotation, string flag,
             bool updateSpriteOnlyIfFlag, bool hd, SpriteBank PathRoot, bool removeDecalsFromPath) 
-           : base(texture,position + offset, scale, depth, rotation, color)
+           : base("generic/algae_a",position + offset, scale, depth, rotation, color)
         {
+            RemoveDecalsFromPath = removeDecalsFromPath;
             this.PathRoot = PathRoot;
             HD = hd;
             if (HD)
@@ -64,11 +71,16 @@ namespace Celeste.Mod.DzhakeHelper.Entities
                 _ => GFX.Game,
             };
 
-            if (removeDecalsFromPath)
+            string extension = Path.GetExtension(texture);
+            if (!string.IsNullOrEmpty(extension)) texture = texture.Replace(extension, "");
+            string input = texture.Replace('\\', '/');
+
+            if (!removeDecalsFromPath)
             {
-                Name = Name.Remove(0, 7);
+                input = Path.Combine("decals", input);
             }
 
+            Name = Regex.Replace(input, "\\d+$", string.Empty);
             textures = atlas.GetAtlasSubtextures(Name);
         }
 

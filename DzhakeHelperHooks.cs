@@ -1,11 +1,7 @@
 ﻿using Celeste.Mod.DzhakeHelper.Entities;
 using Microsoft.Xna.Framework;
-using Monocle;
 using MonoMod.Cil;
-using MonoMod.RuntimeDetour;
-using System.Collections;
-using System.Reflection;
-using YamlDotNet.Core;
+using Monocle;
 
 namespace Celeste.Mod.DzhakeHelper
 {
@@ -19,7 +15,7 @@ namespace Celeste.Mod.DzhakeHelper
             On.Celeste.Player.Die += PlayerDeath;
             On.Celeste.Player.Update += PlayerUpdate;
             Everest.Events.Player.OnSpawn += PlayerSpawn;
-
+            
             IL.Celeste.Player.Render += PlayerRender;
         }
 
@@ -35,16 +31,16 @@ namespace Celeste.Mod.DzhakeHelper
             IL.Celeste.Player.Render -= PlayerRender;
         }
 
+        //Sequence
         private static void CustomDashInitialize(On.Celeste.LevelLoader.orig_LoadingThread orig, LevelLoader self)
         {
             ResetDashSession();
             orig(self);
         }   
 
+        //Sequence
         private static void CustomDashBegin(On.Celeste.Player.orig_DashBegin orig, Player self)
         {
-            bool callOrig = true;
-
             SequenceBlockManager manager = self.Scene.Tracker.GetEntity<SequenceBlockManager>();
             if (manager != null)
             {
@@ -59,20 +55,17 @@ namespace Celeste.Mod.DzhakeHelper
                 }
             }
 
-            if (callOrig)
-            {
-                orig(self);
-            }
+            orig(self);
         }
 
-
+        //Sequence
         private static PlayerDeadBody PlayerDeath(On.Celeste.Player.orig_Die orig, Player self, Vector2 direction, bool evenIfInvincible, bool registerDeathInStats)
         {
             ResetDashSession();
             return orig(self, direction, evenIfInvincible, registerDeathInStats);
         }
 
-
+        //Sequence
         private static void ResetDashSession()
         {
             if (DzhakeHelperModule.Session != null)
@@ -81,7 +74,7 @@ namespace Celeste.Mod.DzhakeHelper
             }
         }
 
-
+        //Timed Kill Trigger
         private static void PlayerUpdate(On.Celeste.Player.orig_Update orig, Player self)
         {
             if (DzhakeHelperModule.Session.TimedKillTriggerTimeChanged == false)
@@ -94,6 +87,7 @@ namespace Celeste.Mod.DzhakeHelper
             orig(self);
         }
 
+        //Change color while in Timed Kill Trigger
         private static void PlayerRender(ILContext il)
         {
             bool happened = false;
@@ -109,6 +103,7 @@ namespace Celeste.Mod.DzhakeHelper
             }
         }
 
+        //Timed Kill Trigger
         private static Color PlayersColor(Color oldColor)
         {
             if (DzhakeHelperModule.Session.TimedKillTriggerColor != Color.White)
@@ -119,14 +114,16 @@ namespace Celeste.Mod.DzhakeHelper
         }
 
 
+        // Custom Key
         private static void PlayerSpawn(Player self)
         {
+            Scene level = self.Scene;
             foreach (CustomKey key in DzhakeHelperModule.Session.CurrentKeys)
             {
                 self.Leader.GainFollower(key.follower);
+                level.Add(key);
             }
         }
-
     }
 
 }
