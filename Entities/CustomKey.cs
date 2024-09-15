@@ -51,24 +51,42 @@ namespace Celeste.Mod.DzhakeHelper.Entities
         public bool OpenAny;
         public string GetSfx;
 
-        public CustomKey(EntityData data, Vector2 offset, EntityID id)
-            : base(data.Position + offset)
+        public string SpriteName;
+        public Color ParticleColor1;
+        public Color ParticleColor2;
+
+        public CustomKey(EntityData data, Vector2 offset, EntityID id) : this(data.Position, offset, id, data.Int("group"), data.Bool("openAny"),
+            data.Bool("bubbleReturn"), data.Float("bubbleReturnDelay", 0.3f), data.Attr("getSfx",
+                "event:/game/general/key_get"),  data.Bool("temporary"),
+        data.Attr("sprite","objects/DzhakeHelper/customKey/"), data.HexColorWithAlpha("color"),
+            data.HexColorWithAlpha("particleColor1", Calc.HexToColorWithAlpha("e2d926")),
+            data.HexColorWithAlpha("particleColor2", Calc.HexToColorWithAlpha("fffeef")), data.NodesOffset(offset), false)
+        {}
+
+        public CustomKey(CustomKeyInfo info) : this(info.position, new(), info.ID, info.Group, info.OpenAny, false, 0.3f, "", info.Temporary,
+            info.SpriteName, info.color, info.ParticleColor1, info.ParticleColor2, null, true)
+        {}
+
+        public CustomKey(Vector2 position, Vector2 offset, EntityID id, int group, bool openAny, bool bubbleReturn, float bubbleReturnDelay, string getSfx, bool temporary,
+            string spriteName, Color color, Color particleColor1, Color particleColor2, Vector2[] nodes, bool collected) : base(position + offset)
         {
-            Group = data.Int("group");
-            OpenAny = data.Bool("openAny");
-            BubbleReturn = data.Bool("bubbleReturn");
-            BubbleReturnDelay = data.Float("bubbleReturnDelay", 0.3f);
-            GetSfx = data.Attr("getSfx", "event:/game/general/key_get");
-            Temporary = data.Bool("temporary");
-            nodes = data.NodesOffset(offset);
-            color = data.HexColorWithAlpha("color");
+            Depth = -1000000;
+            Collidable = !collected;
+            Group = group;
+            OpenAny = openAny;
+            BubbleReturn = bubbleReturn;
+            BubbleReturnDelay = bubbleReturnDelay;
+            GetSfx = getSfx;
+            Temporary = temporary;
+            this.nodes = nodes;
+            this.color = color;
             ID = id;
             Collider = new Hitbox(12f, 12f, -6f, -6f);
             Add(follower = new Follower(id));
             Add(new PlayerCollider(OnPlayer));
             Add(new MirrorReflection());
-            string spriteName = data.Attr("sprite","objects/DzhakeHelper/customKey/");
-            Add(sprite = new Sprite(GFX.Game,spriteName));
+            SpriteName = spriteName;
+            Add(sprite = new Sprite(GFX.Game, SpriteName));
             sprite.AddLoop("idle", "idle", 0.1f);
             sprite.Add("enter", "enter", 0.1f);
             sprite.CenterOrigin();
@@ -111,10 +129,13 @@ namespace Celeste.Mod.DzhakeHelper.Entities
             }));
             Add(light = new VertexLight(Color.White, 1f, 32, 48));
 
+            ParticleColor1 = particleColor1;
+            ParticleColor2 = particleColor2;
+
             P_Shimmer = new ParticleType
             {
-                Color = data.HexColorWithAlpha("particleColor1",Calc.HexToColorWithAlpha("e2d926")),
-                Color2 = data.HexColorWithAlpha("particleColor2",Calc.HexToColorWithAlpha("fffeef")),
+                Color = ParticleColor1,
+                Color2 = ParticleColor2,
                 ColorMode = ParticleType.ColorModes.Blink,
                 FadeMode = ParticleType.FadeModes.Late,
                 LifeMin = 0.5f,
@@ -131,6 +152,11 @@ namespace Celeste.Mod.DzhakeHelper.Entities
                 SpeedMax = 60f,
                 SpeedMultiplier = 0.05f
             };
+
+            if (!IsUsed && !Collidable && Util.TryGetPlayer(out Player player) && !player.Leader.Followers.Contains(follower) && !player.Dead)
+            {
+                player.Leader.GainFollower(follower);
+            }
         }
 
         
@@ -172,7 +198,6 @@ namespace Celeste.Mod.DzhakeHelper.Entities
             Session session = SceneAs<Level>().Session;
             session.UpdateLevelStartDashes();
             wiggler.Start();
-            base.Depth = -1000000;
             if (nodes != null && nodes.Length >= 2)
             {
                 Add(new Coroutine(NodeRoutine(player)));
@@ -180,8 +205,8 @@ namespace Celeste.Mod.DzhakeHelper.Entities
 
             if (!Temporary)
             {
-                DzhakeHelperModule.Session.CurrentKeys.Add(this);
                 session.DoNotLoad.Add(ID);
+                DzhakeHelperModule.Session.CurrentKeys.Add(new(this));
             }
         }
 
@@ -199,10 +224,7 @@ namespace Celeste.Mod.DzhakeHelper.Entities
         public void RegisterUsed()
         {
             IsUsed = true;
-            if (follower.Leader != null)
-            {
-                follower.Leader.LoseFollower(follower);
-            }
+            follower.Leader?.LoseFollower(follower);
         }
 
         
@@ -257,7 +279,6 @@ namespace Celeste.Mod.DzhakeHelper.Entities
                 };
                 tween.OnComplete = delegate
                 {
-                    DzhakeHelperModule.Session.CurrentKeys.Remove(this);
                     RemoveSelf();
                 };
                 Add(tween);
@@ -270,6 +291,19 @@ namespace Celeste.Mod.DzhakeHelper.Entities
 
             sprite.Visible = false;
             Turning = false;
+        }
+
+        public struct CustomKeyInfo(CustomKey key)
+        {
+            public EntityID ID = key.ID;
+            public Color color = key.color;
+            public int Group = key.Group;
+            public bool Temporary = key.Temporary;
+            public bool OpenAny = key.OpenAny;
+            public string SpriteName = key.SpriteName;
+            public Color ParticleColor1 = key.ParticleColor1;
+            public Color ParticleColor2 = key.ParticleColor2;
+            public Vector2 position = key.Position;
         }
     }
 }

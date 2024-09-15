@@ -99,7 +99,7 @@ namespace Celeste.Mod.DzhakeHelper
             }
             if (!happened)
             {
-                Logger.Log(LogLevel.Error, "DzhakeHelper/Hooks/PlayerRender", "Hook was NOT applied! Report it to Dzhake, or someone else.");
+                Logger.Log(LogLevel.Error, "DzhakeHelper/Hooks/PlayerRender", "Hook was NOT applied! Please report this to Dzhake.");
             }
         }
 
@@ -118,9 +118,11 @@ namespace Celeste.Mod.DzhakeHelper
         private static void PlayerSpawn(Player self)
         {
             Scene level = self.Scene;
-            foreach (CustomKey key in DzhakeHelperModule.Session.CurrentKeys)
+            foreach (CustomKey.CustomKeyInfo info in DzhakeHelperModule.Session.CurrentKeys)
             {
+                CustomKey key = new(info);
                 self.Leader.GainFollower(key.follower);
+                key.Position = self.Position + new Vector2(-12 * (int)self.Facing, -8f);
                 level.Add(key);
             }
         }

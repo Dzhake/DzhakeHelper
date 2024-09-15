@@ -13,8 +13,6 @@ namespace Celeste.Mod.DzhakeHelper.Entities
 
         public EntityID ID;
 
-        public bool UnlockingRegistered;
-
         public Sprite sprite;
 
         public bool opening;
@@ -94,9 +92,8 @@ namespace Celeste.Mod.DzhakeHelper.Entities
                     break;
                 }
 
-                if (follower.Entity is CustomKey key1 && (OpenedByAny || key1.OpenAny || key1.Group == Group))
+                if (follower.Entity is CustomKey key1 && (OpenedByAny || key1.OpenAny || key1.Group == Group) && !key1.StartedUsing)
                 {
-                    AddTag(Tags.Global);
                     TryOpen(player,follower);
                     break;
                 }
@@ -112,7 +109,9 @@ namespace Celeste.Mod.DzhakeHelper.Entities
                 if (fol.Entity is Key key)
                     key.StartedUsing = true;
                 else if (fol.Entity is CustomKey key1)
+                {
                     key1.StartedUsing = true;
+                }
                 Add(new Coroutine(UnlockRoutine(fol)));
             }
 
@@ -131,11 +130,10 @@ namespace Celeste.Mod.DzhakeHelper.Entities
             else
                 Add(new Coroutine(key1.UseRoutine(Center + new Vector2(0f, 2f))));
             yield return 1.2f;
-            UnlockingRegistered = true;
             if (stepMusicProgress)
             {
                 level.Session.Audio.Music.Progress++;
-                level.Session.Audio.Apply(forceSixteenthNoteHack: false);
+                level.Session.Audio.Apply();
             }
 
             if (key != null)
@@ -153,16 +151,17 @@ namespace Celeste.Mod.DzhakeHelper.Entities
                 {
                     yield return null;
                 }
+                DzhakeHelperModule.Session.CurrentKeys.RemoveAll(info => info.ID.ID == key1.ID.ID);
             }
 
             Tag |= Tags.TransitionUpdate;
             Collidable = false;
             emitter.Source.DisposeOnTransition = false;
+            level.Session.DoNotLoad.Add(ID);
             yield return sprite.PlayRoutine("open");
             level.Shake();
             Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
             yield return sprite.PlayRoutine("burst");
-            level.Session.DoNotLoad.Add(ID);
             RemoveSelf();
         }
     }

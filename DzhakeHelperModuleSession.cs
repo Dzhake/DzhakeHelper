@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using System;
 using Celeste.Mod.DzhakeHelper.Entities;
 
 namespace Celeste.Mod.DzhakeHelper {
@@ -19,6 +18,6 @@ namespace Celeste.Mod.DzhakeHelper {
 
         public int ActiveSequenceIndex;
 
-        public List<CustomKey> CurrentKeys { get; set; } = new();
+        public List<CustomKey.CustomKeyInfo> CurrentKeys { get; set; } = new();
     }
 }

@@ -122,31 +122,5 @@ namespace Celeste.Mod.DzhakeHelper.Utils
                 player.DummyMoving = false;
             }
         }
-
-
-
-
-        // Skipping (Probably not going to make)
-
-        /*public static void SkipPart()
-        {
-            foreach (Entity entity in (Engine.Scene as Level).Entities)
-            {
-                if (entity.GetType() == typeof(LuaCutsceneEntity)) // entity is LuaCutsceneEntity!
-                {
-                    Logger.Log(LogLevel.Error, "DzhakeHerlper (anyfhow", "whaaaaaa");
-                    (entity as LuaCutsceneEntity).onBeginRoutine.Reset();  //  Doesn't work because... publicizer issue? not sure. Would be bad anyway, LuaCutscenes PR is better, but I didn't manage to make it...
-                }
-            }
-        }
-
-        public static void TogglePartSkip()
-        {
-            DzhakeHelperModule.Session.ShowSkipPart = !DzhakeHelperModule.Session.ShowSkipPart;
-        }
-        public static void SetPartSkip(bool to)
-        {
-            DzhakeHelperModule.Session.ShowSkipPart = to;
-        }*/
     }
 }
