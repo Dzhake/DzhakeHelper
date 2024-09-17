@@ -25,6 +25,8 @@ namespace Celeste.Mod.DzhakeHelper.Entities
         public bool OpenedByAny;
         public bool OpenedByVanillaKeys;
 
+        public bool Persistent;
+
         public CustomDoor(EntityData data, Vector2 offset, EntityID id)
             : base(data.Position + offset, 32f, 32f, safe: false)
         {
@@ -32,18 +34,21 @@ namespace Celeste.Mod.DzhakeHelper.Entities
             OpenedByAny = data.Bool("openedByAny");
             OpenedByVanillaKeys = data.Bool("openedByVanillaKeys", true);
             Group = data.Int("group");
-            string spriteName = data.Attr("sprite", "objects/DzhakeHelper/customDoor/");
             unlockSfx = data.Attr("unlockSfx", "event:/game/03_resort/key_unlock");
+            Persistent = data.Bool("persistent");
             ID = id;
             DisableLightsInside = false;
             Add(new PlayerCollider(OnPlayer, new Circle(60f, 16f, 16f)));
+            //Sprite
+            string spriteName = data.Attr("sprite", "objects/DzhakeHelper/customDoor/");
             Add(sprite = new Sprite(GFX.Game,spriteName));
             sprite.AddLoop("idle","lockdoor",0.1f,0);
             sprite.Add("open", "lockdoor",0.06f, 0,1,2,3,4,5,6,7,8,9);
             sprite.Add("burst","lockdoor",0.06f,10,11,12,13,14,15,16,17,18);
             sprite.Play("idle");
-            sprite.Position -= new Vector2(Width, Height / 2);
+            sprite.Position -= new Vector2(Width, Height / 2); // Sprite is way larger than hitbox, and they don't match by default
             sprite.Color = data.HexColorWithAlpha("color");;
+            //Particles
             P_Appear = new ParticleType
             {
                 ColorMode = ParticleType.ColorModes.Blink,
@@ -58,6 +63,13 @@ namespace Celeste.Mod.DzhakeHelper.Entities
                 SpeedMultiplier = 0.6f,
                 DirectionRange = 0.436332315f
             };
+        }
+
+        public override void Added(Scene scene)
+        {
+            if (Persistent && DHSaveData.OpenedDoorsIDs.Contains(ID.ID))
+                RemoveSelf();
+            base.Added(scene);
         }
 
         public void Appear()
@@ -158,6 +170,7 @@ namespace Celeste.Mod.DzhakeHelper.Entities
             Collidable = false;
             emitter.Source.DisposeOnTransition = false;
             level.Session.DoNotLoad.Add(ID);
+            if (Persistent) DHSaveData.OpenedDoorsIDs.Add(ID.ID);
             yield return sprite.PlayRoutine("open");
             level.Shake();
             Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);

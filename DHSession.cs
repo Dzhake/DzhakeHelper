@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 using Celeste.Mod.DzhakeHelper.Entities;
 
 namespace Celeste.Mod.DzhakeHelper {
-    public class DzhakeHelperModuleSession : EverestModuleSession {
+    public class DHSession : EverestModuleSession {
         //Sequence
         public bool HasSequenceDash { get; set; } = false;
         public int ActiveSequenceIndex;

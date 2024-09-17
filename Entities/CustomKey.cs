@@ -46,6 +46,7 @@ namespace Celeste.Mod.DzhakeHelper.Entities
         public Color color;
 
         public bool Temporary;
+        public bool Persistent;
 
         public int Group;
         public bool OpenAny;
@@ -55,20 +56,25 @@ namespace Celeste.Mod.DzhakeHelper.Entities
         public Color ParticleColor1;
         public Color ParticleColor2;
 
-        public CustomKey(EntityData data, Vector2 offset, EntityID id) : this(data.Position, offset, id, data.Int("group"), data.Bool("openAny"),
-            data.Bool("bubbleReturn"), data.Float("bubbleReturnDelay", 0.3f), data.Attr("getSfx",
-                "event:/game/general/key_get"),  data.Bool("temporary"),
-        data.Attr("sprite","objects/DzhakeHelper/customKey/"), data.HexColorWithAlpha("color"),
+        public CustomKey(EntityData data, Vector2 offset, EntityID id) : this(data.Position, offset, id,
+            data.Int("group"), data.Bool("openAny"),
+            data.Bool("bubbleReturn"), data.Float("bubbleReturnDelay", 0.3f), 
+            data.Attr("getSfx", "event:/game/general/key_get"),  data.Bool("temporary"),
+            data.Attr("sprite","objects/DzhakeHelper/customKey/"), data.HexColorWithAlpha("color"),
             data.HexColorWithAlpha("particleColor1", Calc.HexToColorWithAlpha("e2d926")),
-            data.HexColorWithAlpha("particleColor2", Calc.HexToColorWithAlpha("fffeef")), data.NodesOffset(offset), false)
+            data.HexColorWithAlpha("particleColor2", Calc.HexToColorWithAlpha("fffeef")), data.NodesOffset(offset),
+            false, data.Bool("persistent"))
         {}
 
-        public CustomKey(CustomKeyInfo info) : this(info.position, new(), info.ID, info.Group, info.OpenAny, false, 0.3f, "", info.Temporary,
-            info.SpriteName, info.color, info.ParticleColor1, info.ParticleColor2, null, true)
+        public CustomKey(CustomKeyInfo info) : this(info.position, new(), info.ID, info.Group,
+            info.OpenAny, false, 0.3f, "", false,
+            info.SpriteName, info.color, info.ParticleColor1, info.ParticleColor2, null, true, info.Persistent)
         {}
 
-        public CustomKey(Vector2 position, Vector2 offset, EntityID id, int group, bool openAny, bool bubbleReturn, float bubbleReturnDelay, string getSfx, bool temporary,
-            string spriteName, Color color, Color particleColor1, Color particleColor2, Vector2[] nodes, bool collected) : base(position + offset)
+        public CustomKey(Vector2 position, Vector2 offset, EntityID id, int group, bool openAny, bool bubbleReturn,
+            float bubbleReturnDelay, string getSfx, bool temporary, string spriteName, Color color, Color particleColor1,
+            Color particleColor2, Vector2[] nodes, bool collected, bool persistent)
+            : base(position + offset)
         {
             Depth = -1000000;
             Collidable = !collected;
@@ -162,9 +168,11 @@ namespace Celeste.Mod.DzhakeHelper.Entities
         
         public override void Added(Scene scene)
         {
+            if (Persistent && DHSaveData.UsedKeysIDs.Contains(ID.ID))
+                RemoveSelf();
             base.Added(scene);
             ParticleSystem particlesFG = (scene as Level).ParticlesFG;
-            Add(shimmerParticles = new ParticleEmitter(particlesFG, P_Shimmer, Vector2.Zero, new Vector2(6f, 6f), 1, 0.1f));
+            Add(shimmerParticles = new ParticleEmitter(particlesFG, P_Shimmer, Vector2.Zero, new Vector2(6f, 6f),1, 0.1f));
             shimmerParticles.SimulateCycle();
         }
 
@@ -213,11 +221,9 @@ namespace Celeste.Mod.DzhakeHelper.Entities
         public IEnumerator NodeRoutine(Player player)
         {
             yield return BubbleReturnDelay;
-            if (!player.Dead && BubbleReturn)
-            {
-                Audio.Play("event:/game/general/cassette_bubblereturn", SceneAs<Level>().Camera.Position + new Vector2(160f, 90f));
-                player.StartCassetteFly(nodes[1], nodes[0]);
-            }
+            if (player.Dead || !BubbleReturn) yield break;
+            Audio.Play("event:/game/general/cassette_bubblereturn", SceneAs<Level>().Camera.Position + new Vector2(160f, 90f));
+            player.StartCassetteFly(nodes[1], nodes[0]);
         }
 
         
@@ -280,6 +286,7 @@ namespace Celeste.Mod.DzhakeHelper.Entities
                 tween.OnComplete = delegate
                 {
                     if (Temporary) (Scene as Level).Session.DoNotLoad.Add(ID);
+                    if (Persistent) DHSaveData.UsedKeysIDs.Add(ID.ID);
                     RemoveSelf();
                 };
                 Add(tween);
@@ -299,7 +306,7 @@ namespace Celeste.Mod.DzhakeHelper.Entities
             public EntityID ID = key.ID;
             public Color color = key.color;
             public int Group = key.Group;
-            public bool Temporary = key.Temporary;
+            public bool Persistent = key.Persistent;
             public bool OpenAny = key.OpenAny;
             public string SpriteName = key.SpriteName;
             public Color ParticleColor1 = key.ParticleColor1;
