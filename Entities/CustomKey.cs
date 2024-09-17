@@ -279,6 +279,7 @@ namespace Celeste.Mod.DzhakeHelper.Entities
                 };
                 tween.OnComplete = delegate
                 {
+                    if (Temporary) (Scene as Level).Session.DoNotLoad.Add(ID);
                     RemoveSelf();
                 };
                 Add(tween);

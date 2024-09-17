@@ -1,12 +1,16 @@
-﻿using Celeste.Mod.DzhakeHelper.Entities;
+﻿using System;
+using Celeste.Mod.DzhakeHelper.Entities;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MonoMod.Cil;
 using Monocle;
 
 namespace Celeste.Mod.DzhakeHelper
 {
-    public class DzhakeHelperHooks
+    public static class DzhakeHelperHooks
     {
+        public static bool PlayerMoved;
+        private static Vector2 previousPlayerPos = new();
 
         public static void Load()
         {
@@ -14,9 +18,10 @@ namespace Celeste.Mod.DzhakeHelper
             On.Celeste.Player.DashBegin += CustomDashBegin;
             On.Celeste.Player.Die += PlayerDeath;
             On.Celeste.Player.Update += PlayerUpdate;
+            On.Celeste.Player.Render += PlayerRender;
             Everest.Events.Player.OnSpawn += PlayerSpawn;
             
-            IL.Celeste.Player.Render += PlayerRender;
+            IL.Celeste.Player.Render += PlayerRender_IL;
         }
 
 
@@ -26,9 +31,10 @@ namespace Celeste.Mod.DzhakeHelper
             On.Celeste.Player.DashBegin -= CustomDashBegin;
             On.Celeste.Player.Die -= PlayerDeath;
             On.Celeste.Player.Update -= PlayerUpdate;
+            On.Celeste.Player.Render -= PlayerRender;
             Everest.Events.Player.OnSpawn -= PlayerSpawn;
 
-            IL.Celeste.Player.Render -= PlayerRender;
+            IL.Celeste.Player.Render -= PlayerRender_IL;
         }
 
         //Sequence
@@ -74,9 +80,12 @@ namespace Celeste.Mod.DzhakeHelper
             }
         }
 
-        //Timed Kill Trigger
         private static void PlayerUpdate(On.Celeste.Player.orig_Update orig, Player self)
         {
+            PlayerMoved = previousPlayerPos != self.Position;
+            previousPlayerPos = self.Position;
+
+            //Timed Kill Trigger
             if (DzhakeHelperModule.Session.TimedKillTriggerTimeChanged == false)
             {
                 DzhakeHelperModule.Session.TimedKillTriggerTime = 0f;
@@ -84,11 +93,28 @@ namespace Celeste.Mod.DzhakeHelper
             }
             DzhakeHelperModule.Session.TimedKillTriggerTimeChanged = false;
             DzhakeHelperModule.Session.TimedKillTriggerMaxTime = 0f;
+
             orig(self);
         }
 
+        
+
+        private static void PlayerRender(On.Celeste.Player.orig_Render orig, Player self)
+        {
+            Camera camera = (self.Scene as Level).Camera;
+            Vector2 offset = camera.Position - self.Center; // Offset for matrix, to rotate around player
+
+            Draw.SpriteBatch.End(); //ends the previous batch
+            Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.None, 
+                RasterizerState.CullNone, null, camera.Matrix * Matrix.CreateTranslation(offset.X, offset.Y, 0)
+                  * Matrix.CreateRotationZ(ElephantWalkController.Angle) * Matrix.CreateTranslation(-offset.X, -offset.Y, 0));
+            orig(self);
+            Draw.SpriteBatch.End(); // Ends the rotated batch
+            GameplayRenderer.Begin(); // creates a new batch where the previous batch "was"
+        }
+
         //Change color while in Timed Kill Trigger
-        private static void PlayerRender(ILContext il)
+        private static void PlayerRender_IL(ILContext il)
         {
             bool happened = false;
             ILCursor cursor = new ILCursor(il);
