@@ -109,6 +109,9 @@ entities.DzhakeHelper/ElephantWalkController.attributes.description.range=Rotati
 ## Cycle Sequence Blocks Trigger
 triggers.DzhakeHelper/CycleSequenceBlocksTrigger.placements.name.normal=Cycle Sequence Blocks
 
+## Force Duck Trigger
+triggers.DzhakeHelper/ForceDuckTrigger.placements.name.normal=Force Duck Trigger
+
 ## Set Sequence Blocks Trigger
 triggers.DzhakeHelper/SetSequenceBlocksTrigger.placements.name.normal=Set Sequence Blocks
 

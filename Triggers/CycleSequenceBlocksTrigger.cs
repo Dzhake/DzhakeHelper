@@ -1,18 +1,17 @@
 ﻿using Celeste.Mod.DzhakeHelper.Entities;
 using Celeste.Mod.Entities;
 using Microsoft.Xna.Framework;
-using Monocle;
 
 namespace Celeste.Mod.DzhakeHelper.Triggers
 {
     [CustomEntity("DzhakeHelper/CycleSequenceBlocksTrigger")]
 
-    internal class CycleSequenceBlocksTrigger : Trigger
+    public class CycleSequenceBlocksTrigger : Trigger
     {
 
         public int cyclesCount;
 
-        private bool triggered = false;
+        private bool triggered;
 
         public CycleSequenceBlocksTrigger(EntityData data, Vector2 offset) : base(data, offset)
         {

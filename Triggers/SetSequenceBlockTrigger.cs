@@ -7,7 +7,7 @@ namespace Celeste.Mod.DzhakeHelper.Triggers
 {
     [CustomEntity("DzhakeHelper/SetSequenceBlocksTrigger")]
 
-    internal class SetSequenceBlocksTrigger : Trigger
+    public class SetSequenceBlocksTrigger : Trigger
     {
 
         public int newIndex;

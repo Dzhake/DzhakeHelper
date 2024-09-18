@@ -6,7 +6,7 @@ namespace Celeste.Mod.DzhakeHelper.Triggers
 {
     [CustomEntity("DzhakeHelper/TimedKillTrigger")]
 
-    internal class TimedKillTrigger : Trigger
+    public class TimedKillTrigger : Trigger
     {
 
         public float LiveTime;
