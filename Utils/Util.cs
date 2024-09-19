@@ -20,7 +20,7 @@ public static class Util
 
     public static void Log(string str)
     {
-        Log(LogLevel.Error, str);
+        Log(LogLevel.Warn, str);
     }
 
     public static bool TryGetPlayer(out Player player)

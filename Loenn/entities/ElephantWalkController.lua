@@ -1,7 +1,4 @@
-local elephantWalkController = {}
-
-
-elephantWalkController = {
+local elephantWalkController = {
     name = "DzhakeHelper/ElephantWalkController",
     depth = -100,
     texture = "objects/DzhakeHelper/elephantWalkController/idle",
