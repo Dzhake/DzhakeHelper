@@ -80,6 +80,7 @@ entities.DzhakeHelper/SequenceSwitchBlock.attributes.description.customColors=He
 entities.DzhakeHelper/CustomDecal.placements.name.normal=Custom Decal
 entities.DzhakeHelper/CustomDecal.attributes.description.updateSpriteOnlyIfFlag=(for animated) animation will not play while flag is off
 entities.DzhakeHelper/CustomDecal.attributes.description.removeDecalsFromPath=If not checked, then "decals/" is added to start of path, just because how this entity works
+entities.DzhakeHelper/CustomDecal.attributes.description.texture=Path, starting from <Path root>, without file extension.
 
 ## Void Lift
 entities.DzhakeHelper/VoidLift.placements.name.normal=Void Lift

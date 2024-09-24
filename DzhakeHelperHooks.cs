@@ -10,7 +10,7 @@ namespace Celeste.Mod.DzhakeHelper
     public static class DzhakeHelperHooks
     {
         public static bool PlayerMoved;
-        private static Vector2 previousPlayerPos = new();
+        private static Vector2 previousPlayerPos;
 
         public static void Load()
         {
@@ -101,16 +101,20 @@ namespace Celeste.Mod.DzhakeHelper
 
         private static void PlayerRender(On.Celeste.Player.orig_Render orig, Player self)
         {
-            Camera camera = (self.Scene as Level).Camera;
-            Vector2 offset = camera.Position - self.Center; // Offset for matrix, to rotate around player
-
-            Draw.SpriteBatch.End(); //ends the previous batch
-            Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.None, 
-                RasterizerState.CullNone, null, camera.Matrix * Matrix.CreateTranslation(offset.X, offset.Y, 0)
-                  * Matrix.CreateRotationZ(ElephantWalkController.Angle) * Matrix.CreateTranslation(-offset.X, -offset.Y, 0));
-            orig(self);
-            Draw.SpriteBatch.End(); // Ends the rotated batch
-            GameplayRenderer.Begin(); // creates a new batch where the previous batch "was"
+            if (ElephantWalkController.Angle != 0f)
+            {
+                Camera camera = (self.Scene as Level).Camera;
+                Vector2 offset = camera.Position - self.Center; // Offset for matrix, to rotate around player
+                Draw.SpriteBatch.End(); //ends the previous batch
+                Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.None,
+                    RasterizerState.CullNone, null, camera.Matrix * Matrix.CreateTranslation(offset.X, offset.Y, 0)
+                                                                  * Matrix.CreateRotationZ(ElephantWalkController.Angle) * Matrix.CreateTranslation(-offset.X, -offset.Y, 0));
+                orig(self);
+                Draw.SpriteBatch.End(); // Ends the rotated batch
+                GameplayRenderer.Begin(); // creates a new batch where the previous batch "was"
+            }
+            else
+                orig(self);
         }
 
         //Change color while in Timed Kill Trigger
@@ -140,9 +144,11 @@ namespace Celeste.Mod.DzhakeHelper
         }
 
 
-        // Custom Key
+        // Custom Keys
         private static void PlayerSpawn(Player self)
         {
+            if (DzhakeHelperModule.Session?.CurrentKeys == null || self == null) return;
+
             Scene level = self.Scene;
             foreach (CustomKey.CustomKeyInfo info in DzhakeHelperModule.Session.CurrentKeys)
             {

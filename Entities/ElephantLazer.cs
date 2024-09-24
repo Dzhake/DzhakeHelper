@@ -7,9 +7,10 @@ namespace Celeste.Mod.DzhakeHelper.Entities
     [Tracked]
     public class ElephantLazer : Entity
     {
-        public enum LazerType {Descending, Horizontal}
-
+        public enum LazerType {Descending, Horizontal, Ascending}
         public LazerType type;
+        public bool des => type == LazerType.Descending;
+
         public Color[] colors = [new(228, 5, 6), new(254, 104, 0)];
         public Color green = new(152, 235, 0);
         public Color currColor;
@@ -33,8 +34,8 @@ namespace Celeste.Mod.DzhakeHelper.Entities
             this.type = type;
             Depth = Depths.TheoCrystal;
 
-            if (type == LazerType.Descending) base.Collider = new Hitbox(16f, 16f);
-            else base.Collider = new Hitbox(16f, 32f);
+            if (type == LazerType.Horizontal) base.Collider = new Hitbox(16f, 32f);
+            else base.Collider = new Hitbox(16f, 0f);
             Collidable = true;
             Add(new PlayerCollider(OnPlayer));
 
@@ -50,26 +51,28 @@ namespace Celeste.Mod.DzhakeHelper.Entities
 
         public override void Render()
         {
-            if (type == LazerType.Descending)
+            if (type is LazerType.Descending or LazerType.Ascending)
             {
                 Color color = Color.Lerp(currColor, green, t * 2);
                 switch (t)
                 {
                     case < 0.5f:
-                        texture.DrawCentered(Center, color);
+                        texture.DrawCentered(des ? Center + new Vector2(0,8) : new(Center.X,levelHeight - 8), color);
                         break;
                     case > 0.5f and < 1f:
                         color *= (1f - t) * 2f;
-                        texture.DrawCentered(new(Center.X, Center.Y + (t - 1f) * 32), color);
-                        texture.DrawCentered(new(Center.X, Center.Y + (t - 0.5f) * 32), color);
+                        texture.DrawCentered(new(Center.X, des ? 8 + (t - 1f) * 32 :
+                            levelHeight - 8 - (t - 1f) * 32), color);
+                        texture.DrawCentered(new(Center.X, des ? 8 + (t - 0.5f) * 32 :
+                            levelHeight - 8 - (t - 0.5f) * 32), color);
                         break;
                     case > 1:
                     {
-                        int y = 0;
+                        int y = des ? 0 : levelHeight - 8;
                         while ((Scene as Level).IsInCamera(new(Center.X, y), 8))
                         {
                             texture.DrawCentered(new(Center.X, y), color);
-                            y += 16;
+                            y += des ? 16 : -16;
                         }
                         break;
                     }
@@ -95,9 +98,9 @@ namespace Celeste.Mod.DzhakeHelper.Entities
         {
             t += Engine.DeltaTime;
 
-            if (type == LazerType.Descending)
+            if (type is LazerType.Descending or LazerType.Ascending)
             {
-                if (t > 1) Collider.Height = (Scene as Level).Bounds.Height;
+                if (t > 1) Collider = new Hitbox(16f, (Scene as Level).Bounds.Height);
                 if (t > 1.2f) RemoveSelf();
             }
             else

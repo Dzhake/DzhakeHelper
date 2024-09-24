@@ -34,5 +34,11 @@ namespace Celeste.Mod.DzhakeHelper.Entities
             }
             base.Update();
         }
+
+        public override void Removed(Scene scene)
+        {
+            Angle = 0f;
+            base.Removed(scene);
+        }
     }
 }
