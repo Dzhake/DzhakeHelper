@@ -1,5 +1,3 @@
-local sequenceBlockManager = {}
-
 local colorNames = {
     ["Blue"] = 0,
     ["Rose"] = 1,
@@ -8,7 +6,7 @@ local colorNames = {
 }
 
 
-sequenceBlockManager = {
+local sequenceBlockManager = {
 
     fieldInformation = {
         startWith = {

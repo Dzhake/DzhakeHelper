@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Monocle;
 using Celeste.Mod.DzhakeHelper.Entities;
+using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace Celeste.Mod.DzhakeHelper;
 
@@ -280,13 +281,8 @@ public static class Util
         { DirectionEnum.TopLeft, new Vector2(-1f, -1f) },
     };
 
-    public static Dictionary<int,Color> DefaultSequenceColors = new() {
-        {0,Calc.HexToColor("5c5bda") },
-        {1,Calc.HexToColor("ff0051") },
-        {2,Calc.HexToColor("ffd700") },
-        {3,Calc.HexToColor("49dc88") },
-    };
-
+    public static List<Color> DefaultSequenceColors =
+        [Calc.HexToColor("5c5bda"), Calc.HexToColor("ff0051"), Calc.HexToColor("ffd700"), Calc.HexToColor("49dc88")];
 
 
     public static void CycleSequenceColor(int times = 1)
