@@ -262,14 +262,15 @@ public class CustomMoveBlock : Solid
      
     public Player noSquish;
      
-    public List<Image> body = new List<Image>();
-    public List<Image> topButton = new List<Image>();
-    public List<Image> leftButton = new List<Image>();
-    public List<Image> rightButton = new List<Image>();
-    public List<MTexture> arrows = new List<MTexture>();
+    public List<Image> body = new();
+    public List<Image> topButton = new();
+    public List<Image> leftButton = new();
+    public List<Image> rightButton = new();
+    public List<MTexture> arrows;
 
     public Border border;
 
+    public bool dontBreak;
 
     public Color fillColor;
     public float flash;
@@ -287,9 +288,10 @@ public class CustomMoveBlock : Solid
 
      
     public CustomMoveBlock(Vector2 position, int width, int height, Directions direction, bool canSteer, string texture, float acceleration, float moveSpeed, float crashTime, float crashResetTime, float regenTime,
-        Color idleBgFill, Color pressedBgFill, Color breakingBgFill, bool bottomButton)
+        Color idleBgFill, Color pressedBgFill, Color breakingBgFill, bool bottomButton, bool dontBreak)
         : base(position, width, height, safe: false)
     {
+        this.dontBreak = dontBreak;
         this.idleBgFill = idleBgFill;
         this.pressedBgFill = pressedBgFill;
         this.breakingBgFill = breakingBgFill;
@@ -337,7 +339,8 @@ public class CustomMoveBlock : Solid
             for (int i = 0; i < num; i++)
             {
                 int num3 = ((i != 0) ? ((i < num - 1) ? 1 : 2) : 0);
-                AddImage(mTexture2.GetSubtexture(num3 * 8, 0, 8, 8), new Vector2(i * 8, -4f), 0f, new Vector2(1f, 1f), topButton);
+                AddImage(mTexture2.GetSubtexture(num3 * 8, 0, 8, 8),
+                    new Vector2(i * 8, -4f), 0f, new Vector2(1f, 1f), topButton);
             }
 
             mTexture = GFX.Game[$"{texture}base_h"];
@@ -347,8 +350,10 @@ public class CustomMoveBlock : Solid
             for (int j = 0; j < num2; j++)
             {
                 int num4 = ((j != 0) ? ((j < num2 - 1) ? 1 : 2) : 0);
-                AddImage(mTexture2.GetSubtexture(num4 * 8, 0, 8, 8), new Vector2(-4f, j * 8), MathF.PI / 2f, new Vector2(1f, -1f), leftButton);
-                AddImage(mTexture2.GetSubtexture(num4 * 8, 0, 8, 8), new Vector2((num - 1) * 8 + 4, j * 8), MathF.PI / 2f, new Vector2(1f, 1f), rightButton);
+                AddImage(mTexture2.GetSubtexture(num4 * 8, 0, 8, 8),
+                    new Vector2(-4f, j * 8), MathF.PI / 2f, new Vector2(1f, -1f), leftButton);
+                AddImage(mTexture2.GetSubtexture(num4 * 8, 0, 8, 8),
+                    new Vector2((num - 1) * 8 + 4, j * 8), MathF.PI / 2f, new Vector2(1f, 1f), rightButton);
             }
 
             mTexture = GFX.Game[$"{texture}base_v"];
@@ -360,7 +365,8 @@ public class CustomMoveBlock : Solid
             {
                 int num5 = ((k != 0) ? ((k < num - 1) ? 1 : 2) : 0);
                 int num6 = ((l != 0) ? ((l < num2 - 1) ? 1 : 2) : 0);
-                AddImage(mTexture.GetSubtexture(num5 * 8, num6 * 8, 8, 8), new Vector2(k, l) * 8f, 0f, new Vector2(1f, 1f), body);
+                AddImage(mTexture.GetSubtexture(num5 * 8, num6 * 8, 8, 8),
+                    new Vector2(k, l) * 8f, 0f, new Vector2(1f, 1f), body);
             }
         }
 
@@ -377,10 +383,13 @@ public class CustomMoveBlock : Solid
 
      
     public CustomMoveBlock(EntityData data, Vector2 offset)
-        : this(data.Position + offset, data.Width, data.Height, data.Enum("direction", Directions.Left), data.Bool("canSteer", true), data.Attr("texture", "objects/moveBlock/"),
-              data.Float("acceleration", 300f), data.Float("moveSpeed", 60f), data.Float("crashTime", 0.15f), data.Float("crashResetTime", 0.1f), data.Float("regenTime",3f),
-              data.HexColorWithAlpha("idleFillColor", Calc.HexToColor("474070")), data.HexColorWithAlpha("pressedFillColor", Calc.HexToColor("30b335")), data.HexColorWithAlpha("breakingFillColor", Calc.HexToColor("cc2541")),
-              data.Bool("bottomButton"))
+        : this(data.Position + offset, data.Width, data.Height, data.Enum("direction", Directions.Left),
+            data.Bool("canSteer", true), data.Attr("texture", "objects/moveBlock/"), data.Float("acceleration", 300f),
+            data.Float("moveSpeed", 60f), data.Float("crashTime", 0.15f), data.Float("crashResetTime", 0.1f),
+            data.Float("regenTime",3f), data.HexColorWithAlpha("idleFillColor", Calc.HexToColor("474070")),
+            data.HexColorWithAlpha("pressedFillColor", Calc.HexToColor("30b335")),
+            data.HexColorWithAlpha("breakingFillColor", Calc.HexToColor("cc2541")),
+              data.Bool("bottomButton"), data.Bool("dontBreak"))
     {
     }
 
@@ -419,13 +428,13 @@ public class CustomMoveBlock : Solid
                 if (canSteer)
                 {
                     targetAngle = homeAngle;
-                    bool flag = ((direction != Directions.Right && direction != 0) ? HasPlayerClimbing() : HasPlayerOnTop());
-                    if (flag && noSteerTimer > 0f)
+                    bool triggeredByPlayer = direction is not (Directions.Right or Directions.Left) ? HasPlayerClimbing() : HasPlayerOnTop();
+                    if (triggeredByPlayer && noSteerTimer > 0f)
                     {
                         noSteerTimer -= Engine.DeltaTime;
                     }
 
-                    if (flag)
+                    if (triggeredByPlayer)
                     {
                         if (noSteerTimer <= 0f)
                         {
@@ -454,10 +463,10 @@ public class CustomMoveBlock : Solid
                 angle = Calc.Approach(angle, targetAngle, MathF.PI * 16f * Engine.DeltaTime);
                 Vector2 vector = Calc.AngleToVector(angle, speed);
                 Vector2 vec = vector * Engine.DeltaTime;
-                bool flag2;
-                if (direction == Directions.Right || direction == Directions.Left)
+                bool shouldBreak;
+                if (direction is Directions.Right or Directions.Left)
                 {
-                    flag2 = MoveCheck(vec.XComp());
+                    shouldBreak = MoveCheck(vec.XComp());
                     noSquish = Scene.Tracker.GetEntity<Player>();
                     MoveVCollideSolids(vec.Y, thruDashBlocks: false);
                     noSquish = null;
@@ -476,7 +485,7 @@ public class CustomMoveBlock : Solid
                 }
                 else
                 {
-                    flag2 = MoveCheck(vec.YComp());
+                    shouldBreak = MoveCheck(vec.YComp());
                     noSquish = Scene.Tracker.GetEntity<Player>();
                     MoveHCollideSolids(vec.X, thruDashBlocks: false);
                     noSquish = null;
@@ -493,19 +502,19 @@ public class CustomMoveBlock : Solid
                         }
                     }
 
-                    if (direction == Directions.Down && Top > (float)(SceneAs<Level>().Bounds.Bottom + 32))
+                    if (direction == Directions.Down && Top > SceneAs<Level>().Bounds.Bottom + 32)
                     {
-                        flag2 = true;
+                        shouldBreak = true;
                     }
                 }
 
-                if (flag2)
+                if (shouldBreak)
                 {
                     moveSfx.Param("arrow_stop", 1f);
                     crashResetTimer = 0.1f;
                     if (!(crashTimer > 0f))
                     {
-                        break;
+                        if (!dontBreak) break;
                     }
 
                     crashTimer -= Engine.DeltaTime;
@@ -524,9 +533,9 @@ public class CustomMoveBlock : Solid
                 }
 
                 Level level = Scene as Level;
-                if (Left < (float)level.Bounds.Left || Top < (float)level.Bounds.Top || Right > (float)level.Bounds.Right)
+                if (Left < level.Bounds.Left || Top < level.Bounds.Top || Right > level.Bounds.Right)
                 {
-                    break;
+                    if (!dontBreak) break;
                 }
 
                 yield return null;
@@ -535,18 +544,18 @@ public class CustomMoveBlock : Solid
             Audio.Play("event:/game/04_cliffside/arrowblock_break", Position);
             moveSfx.Stop();
             state = MovementState.Breaking;
-            speed = (targetSpeed = 0f);
-            angle = (targetAngle = homeAngle);
+            speed = targetSpeed = 0f;
+            angle = targetAngle = homeAngle;
             StartShaking(0.2f);
             StopPlayerRunIntoAnimation = true;
             yield return 0.2f;
             BreakParticles();
             List<Debris> debris = new List<Debris>();
-            for (int i = 0; (float)i < Width; i += 8)
+            for (int i = 0; i < Width; i += 8)
             {
-                for (int j = 0; (float)j < Height; j += 8)
+                for (int j = 0; j < Height; j += 8)
                 {
-                    Vector2 vector2 = new Vector2((float)i + 4f, (float)j + 4f);
+                    Vector2 vector2 = new Vector2(i + 4f, j + 4f);
                     Debris debris2 = Engine.Pooler.Create<Debris>().Init(Position + vector2, Center, startPosition + vector2, Texture);
                     debris.Add(debris2);
                     Scene.Add(debris2);
@@ -636,6 +645,7 @@ public class CustomMoveBlock : Solid
     public override void Update()
     {
         base.Update();
+        Level level = Scene as Level;
         if (canSteer)
         {
             bool flag = (direction == Directions.Up || direction == Directions.Down) && CollideCheck<Player>(Position + new Vector2(-1f, 0f));
@@ -676,6 +686,11 @@ public class CustomMoveBlock : Solid
             int num = (int)Math.Floor((0f - (Calc.AngleToVector(angle, 1f) * new Vector2(-1f, 1f)).Angle() + MathF.PI * 2f) % (MathF.PI * 2f) / (MathF.PI * 2f) * 8f + 0.5f);
             moveSfx.Param("arrow_influence", num + 1);
         }
+
+        //"Optmimization"
+        if (dontBreak && (Top > level.Bounds.Bottom || Bottom < level.Bounds.Top || Left > level.Bounds.Right || Right < level.Bounds.Left))
+            RemoveSelf();
+        
 
         border.Visible = Visible;
         flash = Calc.Approach(flash, 0f, Engine.DeltaTime * 5f);
@@ -720,50 +735,46 @@ public class CustomMoveBlock : Solid
     {
         if (speed.X != 0f)
         {
-            if (MoveHCollideSolids(speed.X, thruDashBlocks: false))
+            if (!MoveHCollideSolids(speed.X, thruDashBlocks: false)) return false;
+
+            for (int i = 1; i <= 3; i++)
             {
-                for (int i = 1; i <= 3; i++)
+                for (int num = 1; num >= -1; num -= 2)
                 {
-                    for (int num = 1; num >= -1; num -= 2)
+                    Vector2 vector = new Vector2(Math.Sign(speed.X), i * num);
+                    if (!CollideCheck<Solid>(Position + vector))
                     {
-                        Vector2 vector = new Vector2(Math.Sign(speed.X), i * num);
-                        if (!CollideCheck<Solid>(Position + vector))
-                        {
-                            MoveVExact(i * num);
-                            MoveHExact(Math.Sign(speed.X));
-                            return false;
-                        }
+                        MoveVExact(i * num);
+                        MoveHExact(Math.Sign(speed.X));
+                        return false;
                     }
                 }
-
-                return true;
             }
 
-            return false;
+            return true;
+
         }
 
         if (speed.Y != 0f)
         {
-            if (MoveVCollideSolids(speed.Y, thruDashBlocks: false))
+            if (!MoveVCollideSolids(speed.Y, thruDashBlocks: false)) return false;
+
+            for (int j = 1; j <= 3; j++)
             {
-                for (int j = 1; j <= 3; j++)
+                for (int num2 = 1; num2 >= -1; num2 -= 2)
                 {
-                    for (int num2 = 1; num2 >= -1; num2 -= 2)
+                    Vector2 vector2 = new Vector2(j * num2, Math.Sign(speed.Y));
+                    if (!CollideCheck<Solid>(Position + vector2))
                     {
-                        Vector2 vector2 = new Vector2(j * num2, Math.Sign(speed.Y));
-                        if (!CollideCheck<Solid>(Position + vector2))
-                        {
-                            MoveHExact(j * num2);
-                            MoveVExact(Math.Sign(speed.Y));
-                            return false;
-                        }
+                        MoveHExact(j * num2);
+                        MoveVExact(Math.Sign(speed.Y));
+                        return false;
                     }
                 }
-
-                return true;
             }
 
-            return false;
+            return true;
+
         }
 
         return false;

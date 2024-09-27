@@ -104,8 +104,7 @@ entities.DzhakeHelper/ElephantWalkController.placements.name.normal=Elephant Wal
 entities.DzhakeHelper/ElephantWalkController.attributes.description.speed=Rotation speed in radians
 entities.DzhakeHelper/ElephantWalkController.attributes.description.range=Rotation range in radians (Angle goes from range to -range)
 
-## Elephant Rave Controller
-entities.DzhakeHelper/ElephantRaveController.placements.name.normal=Elephant Rave Controller
+
 
 
 

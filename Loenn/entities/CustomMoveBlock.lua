@@ -39,6 +39,7 @@ for _, direction in ipairs(moveBlockDirections) do
                 pressedFillColor = "30b335",
                 breakingFillColor = "cc2541",
                 bottomButton = false,
+                dontBreak = false,
             }
         })
     end
