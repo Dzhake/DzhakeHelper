@@ -15,6 +15,15 @@ moveBlock.fieldInformation = {
     direction = {
         options = moveBlockDirections,
         editable = false
+    },
+    idleFillColor = {
+        fieldType = "color"
+    },
+    pressedFillColor = {
+        fieldType = "color"
+    },
+    breakingFillColor = {
+        fieldType = "color"
     }
 }
 moveBlock.placements = {}

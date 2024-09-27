@@ -120,6 +120,7 @@ public class CustomMoveBlock : Solid
          
         public Debris Init(Vector2 position, Vector2 center, Vector2 returnTo, string texture)
         {
+            Remove(sprite);
             Add(sprite = new Image(Calc.Random.Choose(GFX.Game.GetAtlasSubtextures($"{texture}debris"))));
             sprite.CenterOrigin();
             sprite.FlipX = Calc.Random.Chance(0.5f);
@@ -145,6 +146,7 @@ public class CustomMoveBlock : Solid
         public override void Update()
         {
             base.Update();
+
             if (!returning)
             {
                 if (Collidable)
@@ -231,14 +233,14 @@ public class CustomMoveBlock : Solid
     public static ParticleType P_Break = MoveBlock.P_Break;
     public static ParticleType P_Move = MoveBlock.P_Move;
      
-    public float Accel = 300f;
-    public float MoveSpeed = 60f;
+    public float Accel;
+    public float MoveSpeed;
     public const float SteerSpeed = MathF.PI * 16f;
     public const float MaxAngle = MathF.PI / 4f;
     public const float NoSteerTime = 0.2f;
-    public float CrashTime = 0.15f;
-    public float CrashResetTime = 0.1f;
-    public float RegenTime = 3f;
+    public float CrashTime;
+    public float CrashResetTime;
+    public float RegenTime;
     public bool canSteer;
      
     public Directions direction;
@@ -332,31 +334,36 @@ public class CustomMoveBlock : Solid
 
         int num = width / 8;
         int num2 = height / 8;
-        MTexture mTexture = GFX.Game[$"{texture}base"];
-        MTexture mTexture2 = GFX.Game[$"{texture}button"];
-        if (canSteer && (direction == Directions.Left || direction == Directions.Right))
+        MTexture baseTexture = GetTexture("base");
+        MTexture buttonTexture = GetTexture("button");
+        switch (canSteer)
         {
-            for (int i = 0; i < num; i++)
+            case true when direction is Directions.Left or Directions.Right:
             {
-                int num3 = ((i != 0) ? ((i < num - 1) ? 1 : 2) : 0);
-                AddImage(mTexture2.GetSubtexture(num3 * 8, 0, 8, 8),
-                    new Vector2(i * 8, -4f), 0f, new Vector2(1f, 1f), topButton);
-            }
+                for (int i = 0; i < num; i++)
+                {
+                    int num3 = ((i != 0) ? ((i < num - 1) ? 1 : 2) : 0);
+                    AddImage(buttonTexture.GetSubtexture(num3 * 8, 0, 8, 8),
+                        new Vector2(i * 8, -4f), 0f, new Vector2(1f, 1f), topButton);
+                }
 
-            mTexture = GFX.Game[$"{texture}base_h"];
-        }
-        else if (canSteer && (direction == Directions.Up || direction == Directions.Down))
-        {
-            for (int j = 0; j < num2; j++)
+                baseTexture = GetTexture("base_h");
+                break;
+            }
+            case true when (direction == Directions.Up || direction == Directions.Down):
             {
-                int num4 = ((j != 0) ? ((j < num2 - 1) ? 1 : 2) : 0);
-                AddImage(mTexture2.GetSubtexture(num4 * 8, 0, 8, 8),
-                    new Vector2(-4f, j * 8), MathF.PI / 2f, new Vector2(1f, -1f), leftButton);
-                AddImage(mTexture2.GetSubtexture(num4 * 8, 0, 8, 8),
-                    new Vector2((num - 1) * 8 + 4, j * 8), MathF.PI / 2f, new Vector2(1f, 1f), rightButton);
-            }
+                for (int j = 0; j < num2; j++)
+                {
+                    int num4 = ((j != 0) ? ((j < num2 - 1) ? 1 : 2) : 0);
+                    AddImage(buttonTexture.GetSubtexture(num4 * 8, 0, 8, 8),
+                        new Vector2(-4f, j * 8), MathF.PI / 2f, new Vector2(1f, -1f), leftButton);
+                    AddImage(buttonTexture.GetSubtexture(num4 * 8, 0, 8, 8),
+                        new Vector2((num - 1) * 8 + 4, j * 8), MathF.PI / 2f, new Vector2(1f, 1f), rightButton);
+                }
 
-            mTexture = GFX.Game[$"{texture}base_v"];
+                baseTexture = GetTexture("base_v");
+                break;
+            }
         }
 
         for (int k = 0; k < num; k++)
@@ -365,7 +372,7 @@ public class CustomMoveBlock : Solid
             {
                 int num5 = ((k != 0) ? ((k < num - 1) ? 1 : 2) : 0);
                 int num6 = ((l != 0) ? ((l < num2 - 1) ? 1 : 2) : 0);
-                AddImage(mTexture.GetSubtexture(num5 * 8, num6 * 8, 8, 8),
+                AddImage(baseTexture.GetSubtexture(num5 * 8, num6 * 8, 8, 8),
                     new Vector2(k, l) * 8f, 0f, new Vector2(1f, 1f), body);
             }
         }
@@ -562,16 +569,13 @@ public class CustomMoveBlock : Solid
                 }
             }
 
-            CustomMoveBlock moveBlock = this;
             Vector2 amount = startPosition - Position;
             DisableStaticMovers();
-            moveBlock.MoveStaticMovers(amount);
+            MoveStaticMovers(amount);
             Position = startPosition;
-            CustomMoveBlock moveBlock2 = this;
-            CustomMoveBlock moveBlock3 = this;
             bool visible = false;
-            moveBlock3.Collidable = false;
-            moveBlock2.Visible = visible;
+            Collidable = false;
+            Visible = visible;
             yield return 2.2f;
             foreach (Debris item in debris)
             {
@@ -585,10 +589,9 @@ public class CustomMoveBlock : Solid
 
             Collidable = true;
             EventInstance instance = Audio.Play("event:/game/04_cliffside/arrowblock_reform_begin", debris[0].Position);
-            CustomMoveBlock moveBlock4 = this;
             Coroutine component;
             Coroutine routine = (component = new Coroutine(SoundFollowsDebrisCenter(instance, debris)));
-            moveBlock4.Add(component);
+            Add(component);
             foreach (Debris item2 in debris)
             {
                 item2.StartShaking();
@@ -869,7 +872,7 @@ public class CustomMoveBlock : Solid
         }
         else
         {
-            GFX.Game[$"{Texture}x"].DrawCentered(base.Center);
+            GetTexture("x").DrawCentered(base.Center);
         }
 
         float num = flash * 4f;
@@ -993,5 +996,12 @@ public class CustomMoveBlock : Solid
         }
 
         Collidable = true;
+    }
+
+
+    public MTexture GetTexture(string image, Atlas? atlas = null)
+    {
+        atlas ??= GFX.Game;
+        return !atlas.textures.TryGetValue(Texture + image, out var value) ? atlas["objects/moveBlock/" + image] : value;
     }
 }
