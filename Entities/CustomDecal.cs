@@ -73,13 +73,14 @@ namespace Celeste.Mod.DzhakeHelper.Entities
 
             string extension = Path.GetExtension(texture);
             if (!string.IsNullOrEmpty(extension)) texture = texture.Replace(extension, "");
-            string input = texture.Replace('\\', '/');
+            
 
             if (!removeDecalsFromPath)
             {
-                input = Path.Combine("decals", input);
+                texture = Path.Combine("decals", texture);
             }
 
+            string input = texture.Replace('\\', '/');
             Name = Regex.Replace(input, "\\d+$", string.Empty);
             textures = atlas.GetAtlasSubtextures(Name);
         }
