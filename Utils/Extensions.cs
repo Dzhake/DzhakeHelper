@@ -1,7 +1,9 @@
-﻿using Celeste.Mod.DzhakeHelper.Utils;
+﻿using System;
+using Celeste.Mod.DzhakeHelper.Utils;
 using Microsoft.Xna.Framework;
 using Monocle;
 using System.ComponentModel;
+using Microsoft.Xna.Framework.Input;
 
 namespace Celeste.Mod.DzhakeHelper;
 
@@ -61,4 +63,21 @@ public static class Extensions
     }
 
 
+    public static Vector2 Vector(this EntityData data, string name) //thanks snip!!!!@!!!!!! :333
+    {
+        var splitValue = data.Attr(name).Split(',');
+
+        if (splitValue.Length != 2)
+        {
+            throw new InvalidOperationException($"\"{name}\" is not a valid vector; expected 2 comma-separated values, but got {splitValue.Length}");
+        }
+
+        if (!int.TryParse(splitValue[0], out var x))
+            throw new InvalidOperationException($"\"{name}\" is not a valid vector; \"{splitValue[0]}\" (X component) is not a number");
+
+        if (!int.TryParse(splitValue[1], out var y))
+            throw new InvalidOperationException($"\"{name}\" is not a valid vector; \"{splitValue[1]}\" (Y component) is not a number");
+
+        return new Vector2(x, y);
+    }
 }
