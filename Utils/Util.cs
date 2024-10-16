@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Monocle;
 using Celeste.Mod.DzhakeHelper.Entities;
+using Microsoft.Xna.Framework.Input;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace Celeste.Mod.DzhakeHelper;
@@ -13,7 +14,6 @@ namespace Celeste.Mod.DzhakeHelper;
 // This file is not really by me :p
 public static class Util
 {
-    public static Random random = new Random(Guid.NewGuid().GetHashCode());
     public static void Log(LogLevel logLevel, string str)
     {
         Logger.Log(logLevel, "Dzhake Helper", str);
@@ -339,7 +339,7 @@ public static class Util
         }
         else
         {
-            entityData.ID = Util.random.Next(500, 9999);
+            entityData.ID = Calc.Random.Next(10000, 999999);
         }
 
         entityData.Level = Util.GetLevel().Session.LevelData;
@@ -351,5 +351,11 @@ public static class Util
         }
 
         return entityData;
+    }
+
+    public static Vector2 GameMousePos()
+    {
+        MouseState mouseState = Mouse.GetState();
+        return new Vector2(mouseState.X / 6f, mouseState.Y / 6f);
     }
 }

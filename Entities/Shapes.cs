@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Monocle;
-
+//Class which turned out to be useless currently
 namespace Celeste.Mod.DzhakeHelper.Entities
 {
     public class Rect(Vector2 position, Vector2 size, Color color, bool cutscene = true, bool hollow = false)

@@ -108,7 +108,7 @@ namespace Celeste.Mod.DzhakeHelper
                 Draw.SpriteBatch.End(); //ends the previous batch
                 Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.None,
                     RasterizerState.CullNone, null, camera.Matrix * Matrix.CreateTranslation(offset.X, offset.Y, 0)
-                                                                  * Matrix.CreateRotationZ(ElephantWalkController.Angle) * Matrix.CreateTranslation(-offset.X, -offset.Y, 0));
+                    * Matrix.CreateRotationZ(ElephantWalkController.Angle) * Matrix.CreateTranslation(-offset.X, -offset.Y, 0));
                 orig(self);
                 Draw.SpriteBatch.End(); // Ends the rotated batch
                 GameplayRenderer.Begin(); // creates a new batch where the previous batch "was"

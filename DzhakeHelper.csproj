@@ -52,6 +52,7 @@
 
   <ItemGroup>
     <None Include="nowhere\ElephantRaveController.lua" />
+    <None Include="nowhere\SuperHotController.lua" />
   </ItemGroup>
 
   <Target Name="CopyFiles" AfterTargets="Build">
