@@ -16,7 +16,7 @@ public class ManualSequenceComponent : Component
     public bool UseCustomColor = false;
 
     public Entity entity;
-
+    public EntityID ID;
 
     public ManualSequenceComponent(EntityData data, Entity entity)
         : base(active: true, visible: false)

@@ -1,6 +1,8 @@
-﻿using Celeste.Mod.Entities;
+﻿using System;
+using Celeste.Mod.Entities;
 using Monocle;
 using Microsoft.Xna.Framework;
+using System.Linq;
 
 namespace Celeste.Mod.DzhakeHelper.Entities
 {
@@ -16,46 +18,41 @@ namespace Celeste.Mod.DzhakeHelper.Entities
 
         public bool everyDash;
 
-        public static int CurrentIndex { get { return DzhakeHelperModule.Session.ActiveSequenceIndex; } set { DzhakeHelperModule.Session.ActiveSequenceIndex = value; } }
+        public EntityID ID;
 
-        public SequenceBlockManager(EntityData data, Vector2 offset) : base(data.Position + offset)
+        public static int CurrentIndex
+        {
+            get { return DzhakeHelperModule.Session.ActiveSequenceIndex; }
+            set { DzhakeHelperModule.Session.ActiveSequenceIndex = value; }
+        }
+
+        public SequenceBlockManager(EntityData data, Vector2 offset, EntityID id) : base(data.Position + offset)
         {
             startWith = data.Int("startWith");
             everyDash = data.Bool("everyDash");
+            ID = id;
         }
 
         public override void Awake(Scene scene)
         {
             base.Awake(scene);
+            Util.Log("awake");
 
             foreach (SequenceBlock entity in scene.Tracker.GetEntities<SequenceBlock>())
-            {
-                if (entity.Index > typesCount)
-                {
+                if (entity.ID.Level == ID.Level && entity.Index > typesCount)
                     typesCount = entity.Index;
-                }
-            }
 
-            foreach (ManualSequenceComponent component in base.Scene.Tracker.GetComponents<ManualSequenceComponent>())
-            {
-                if (component.Index > typesCount)
-                {
-                    typesCount = component.Index;
-                }
-            }
+            foreach (ManualSequenceComponent component in scene.Tracker.GetComponents<ManualSequenceComponent>())
+                typesCount = Math.Max(component.Index, typesCount);
 
-            foreach (SequenceComponent component1 in base.Scene.Tracker.GetComponents<SequenceComponent>())
-            {
-                if (component1.Index > typesCount)
-                {
-                    typesCount = component1.Index;
-                }
-            }
+            foreach (SequenceComponent component1 in scene.Tracker.GetComponents<SequenceComponent>())
+                typesCount = Math.Max(component1.Index, typesCount);
 
-            typesCount++;
+            typesCount++; //index is 0-3 and typesCount is 1-4
             if (typesCount == 1) typesCount++; // 2 is minimum cuz why not
 
             CurrentIndex = startWith;
+            Util.Log($"typesCount: {typesCount}");
 
             UpdateBlocks();
         }
@@ -63,14 +60,15 @@ namespace Celeste.Mod.DzhakeHelper.Entities
 
         public override void Update()
         {
-            for (int i = 0; i < 4; i++)
-            {
-                if (((Scene as Level)?.Session?.GetFlag($"DzhakeHelper_Sequence_{i}") ?? false) == (i != CurrentIndex))  //if this is active color and there is no flag, or it's not active
+            if (Scene is Level level && level.Session != null)
+                for (int i = 0; i < 4; i++)
                 {
+                    if (i == CurrentIndex || !level.Session.GetFlag($"DzhakeHelper_Sequence_{i}")) continue;
+                    //if this is not active color and there is flag
                     SetSequenceBlocks(i);
                     break;
                 }
-            }
+            
 
             base.Update();
         }
@@ -79,40 +77,28 @@ namespace Celeste.Mod.DzhakeHelper.Entities
         public void UpdateBlocks()
         {
             foreach (SequenceBlock entity in Scene.Tracker.GetEntities<SequenceBlock>())
-            {
                 entity.Activated = entity.Index == CurrentIndex;
-            }
 
             foreach (ManualSequenceComponent component in Scene.Tracker.GetComponents<ManualSequenceComponent>())
-            {
                 component.Activated = component.Index == CurrentIndex;
-            }
 
             foreach (SequenceSwitchBlock switchBlock in Scene.Tracker.GetEntities<SequenceSwitchBlock>())
-            {
                 switchBlock.NextColor(CurrentIndex, false);
-            } 
 
             foreach (SequenceComponent component1 in Scene.Tracker.GetComponents<SequenceComponent>())
-            {
                 component1.Activated = component1.Index == CurrentIndex;
-            }
 
             for (int i = 0; i < 4; i++)
             {
                 (Scene as Level)?.Session?.SetFlag($"DzhakeHelper_Sequence_{i}", false);
             }
-            (Scene as Level)?.Session?.SetFlag($"DzhakeHelper_Sequence_{CurrentIndex}", true);
+            (Scene as Level)?.Session?.SetFlag($"DzhakeHelper_Sequence_{CurrentIndex}");
+            Util.Log($"typesCount: {typesCount}, CurrentIndex: {CurrentIndex}");
         }
 
         public void CycleSequenceBlocks(int times = 1)
         {
-            for (int i = 0;  i < times; i++)
-            {
-                CurrentIndex++;
-                CurrentIndex %= typesCount;
-            }
-            // outside loop, cuz why do i need to update those each time?
+            CurrentIndex = (CurrentIndex + times) % typesCount;
             UpdateBlocks();
         }
 
