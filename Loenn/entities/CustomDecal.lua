@@ -21,7 +21,6 @@ local CustomDecal = {
             pathRoot = 0,
             updateSpriteOnlyIfFlag = true,
             hiRes = false,
-            removeDecalsFromPath = false,
         },
     },
     fieldInformation = {
