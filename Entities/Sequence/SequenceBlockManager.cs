@@ -36,7 +36,6 @@ namespace Celeste.Mod.DzhakeHelper.Entities
         public override void Awake(Scene scene)
         {
             base.Awake(scene);
-            Util.Log("awake");
 
             foreach (SequenceBlock entity in scene.Tracker.GetEntities<SequenceBlock>())
                 if (entity.ID.Level == ID.Level && entity.Index > typesCount)
@@ -52,7 +51,6 @@ namespace Celeste.Mod.DzhakeHelper.Entities
             if (typesCount == 1) typesCount++; // 2 is minimum cuz why not
 
             CurrentIndex = startWith;
-            Util.Log($"typesCount: {typesCount}");
 
             UpdateBlocks();
         }
@@ -93,7 +91,6 @@ namespace Celeste.Mod.DzhakeHelper.Entities
                 (Scene as Level)?.Session?.SetFlag($"DzhakeHelper_Sequence_{i}", false);
             }
             (Scene as Level)?.Session?.SetFlag($"DzhakeHelper_Sequence_{CurrentIndex}");
-            Util.Log($"typesCount: {typesCount}, CurrentIndex: {CurrentIndex}");
         }
 
         public void CycleSequenceBlocks(int times = 1)
