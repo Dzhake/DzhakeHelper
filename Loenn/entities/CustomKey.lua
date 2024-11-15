@@ -4,6 +4,7 @@ local drawableSprite = require("structs.drawable_sprite")
 local CustomKey = {
     name = "DzhakeHelper/CustomKey",
     depth = -100,
+    nodeLimits = {0,2}
 }
 
 CustomKey.placements = {
@@ -18,7 +19,7 @@ CustomKey.placements = {
         openAny = false,
         temporary = false,
         getSfx = "event:/game/general/key_get",
-        sprite = "objects/DzhakeHelper/customKey/"
+        sprite = "objects/DzhakeHelper/customKey/",
     },
 }
 
