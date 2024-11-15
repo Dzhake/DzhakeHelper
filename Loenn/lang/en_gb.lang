@@ -94,6 +94,7 @@ entities.DzhakeHelper/CustomKey.placements.name.normal=Custom Key
 entities.DzhakeHelper/CustomKey.attributes.description.doWobble=If checked, key will move around a bit.
 entities.DzhakeHelper/CustomKey.attributes.description.openAny=Key can only open door with same group, unless key or door has "open any"/"opened by any" checked.
 entities.DzhakeHelper/CustomKey.attributes.description.temporary=If checked, key will respawn when player dies, like berry, but it'll be removed forever on use.
+entities.DzhakeHelper/CustomKey.attributes.description.bubbleReturn=Requires 2 nodes to work properly!
 
 ## Custom Door
 entities.DzhakeHelper/CustomDoor.placements.name.normal=Custom Door
@@ -107,6 +108,21 @@ entities.DzhakeHelper/ElephantWalkController.attributes.description.range=Rotati
 ## Superhot Controller
 entities.DzhakeHelper/SuperHotController.placements.name.normal=Superhot Controller
 
+## Player Hitbox Controller
+entities.DzhakeHelper/PlayerHitboxController.placements.name.normal=Player Hitbox Controller
+#tooltips by kosei
+entities.DzhakeHelper/PlayerHitboxController.attributes.description.normalHitbox=Normal (full) hitbox of the player (bigger, green rectangle on celesteTAS).\nThe format is Width,Height.
+entities.DzhakeHelper/PlayerHitboxController.attributes.description.normalHurtbox=Hurtbox of the player (smaller, red rectangle on celesteTAS).\nThe format is Width,Height.
+entities.DzhakeHelper/PlayerHitboxController.attributes.description.duckHurtbox=Hurtbox of the player while they are crouched.\nThe format is Width,Height.
+entities.DzhakeHelper/PlayerHitboxController.attributes.description.duckHitbox=Hitbox of the player while they are crouched.\nThe format is Width,Height.
+entities.DzhakeHelper/PlayerHitboxController.attributes.description.featherHitbox=Hitbox of the player while they are in feather state (red square on celesteTAS).\nThe format is Width,Height.
+entities.DzhakeHelper/PlayerHitboxController.attributes.description.featherHurtbox=Hurtbox of the player while they are in feather state (green square on celesteTAS).\nThe format is Width,Height.
+entities.DzhakeHelper/PlayerHitboxController.attributes.description.normalHitboxOffset=Offset of the normal hitbox relative to the center of the sprite (which is, by default, 32x32).\nThe format is X,Y.
+entities.DzhakeHelper/PlayerHitboxController.attributes.description.normalHurtboxOffset=Offset of the normal hurtbox relative to the center of the sprite (which is, by default, 32x32).\nThe format is X,Y.
+entities.DzhakeHelper/PlayerHitboxController.attributes.description.duckHitboxOffset=Offset of the duck hitbox relative to the center of the sprite (which is, by default, 32x32).\nThe format is X,Y.
+entities.DzhakeHelper/PlayerHitboxController.attributes.description.duckHurtboxOffset=Offset of the duck hurtbox relative to the center of the sprite (which is, by default, 32x32).\nThe format is X,Y.
+entities.DzhakeHelper/PlayerHitboxController.attributes.description.featherHitboxOffset=Offset of the feather hitbox relative to the center of the sprite (which is, by default, 32x32).\nThe format is X,Y.
+entities.DzhakeHelper/PlayerHitboxController.attributes.description.featherHurtboxOffset=Offset of the feather hurtbox relative to the center of the sprite (which is, by default, 32x32).\nThe format is X,Y.
 
 
 # Triggers
