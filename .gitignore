@@ -357,3 +357,4 @@ MigrationBackup/
 # JetBrains Rider
 .idea
 
+/Maps/Dzhake/DzhakeHelper/test.bin
