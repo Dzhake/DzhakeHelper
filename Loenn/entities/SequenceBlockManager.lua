@@ -23,9 +23,11 @@ local sequenceBlockManager = {
         {
             name = "normal",
             data = {
-
                 startWith = 0,
                 everyDash = false,
+                flag = "",
+                cycleWhenFlagOn = false,
+                cycleWhenFlagOff = false
             },
         },
     },

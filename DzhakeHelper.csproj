@@ -16,8 +16,11 @@
     <Reference Private="false" />
   </ItemDefinitionGroup>
   <ItemGroup>
+    <Compile Remove="Entities\WIP\**" />
     <Compile Remove="nowhere\**" />
+    <EmbeddedResource Remove="Entities\WIP\**" />
     <EmbeddedResource Remove="nowhere\**" />
+    <None Remove="Entities\WIP\**" />
     <None Remove="nowhere\**" />
   </ItemGroup>
 

@@ -1,8 +1,8 @@
 @ECHO OFF
 rem echo "start"
 rem Config:
-set	dirsToCopy=bin\ Loenn\ Graphics\ Dialog\
-set filesToCopy=everest.yaml
+set	dirsToCopy=Loenn\ Graphics\ Dialog\
+set filesToCopy=everest.yaml bin\DzhakeHelper.dll bin\DzhakeHelper.pdb
 rem End of config!
 set buildDir=%~dp0Build\\
 rem echo "variables created"

@@ -6,28 +6,22 @@ namespace Celeste.Mod.DzhakeHelper.Triggers
 {
     [CustomEntity("DzhakeHelper/CycleSequenceBlocksTrigger")]
 
-    public class CycleSequenceBlocksTrigger : Trigger
+    public class CycleSequenceBlocksTrigger(EntityData data, Vector2 offset) : Trigger(data, offset)
     {
 
-        public int cyclesCount;
+        public int cyclesCount = data.Int("cyclesCount");
 
         private bool triggered;
 
-        public CycleSequenceBlocksTrigger(EntityData data, Vector2 offset) : base(data, offset)
-        {
-            cyclesCount = data.Int("cyclesCount");
-        }
-
         public override void OnEnter(Player player)
         {
-            if (!triggered) 
+            if (triggered) return;
+
+            for (int i = 0; i < cyclesCount; i++)
             {
-                for (int i = 0; i < cyclesCount; i++)
-                {
-                    base.Scene.Tracker.GetEntity<SequenceBlockManager>()?.CycleSequenceBlocks();
-                }
-                triggered = true;
+                Scene.Tracker.GetEntity<SequenceBlockManager>()?.CycleSequenceBlocks();
             }
+            triggered = true;
         }
     }
 }

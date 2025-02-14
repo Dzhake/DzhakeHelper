@@ -2,7 +2,6 @@
 using Celeste.Mod.Entities;
 using Monocle;
 using Microsoft.Xna.Framework;
-using System.Linq;
 
 namespace Celeste.Mod.DzhakeHelper.Entities
 {
@@ -10,27 +9,25 @@ namespace Celeste.Mod.DzhakeHelper.Entities
     
     [Tracked]
 
-    public class SequenceBlockManager : Entity
+    public class SequenceBlockManager(EntityData data, Vector2 offset, EntityID id) : Entity(data.Position + offset)
     {
-        private readonly int startWith;
+        private readonly int startWith = data.Int("startWith");
 
         public int typesCount = -1;
 
-        public bool everyDash;
+        public bool everyDash = data.Bool("everyDash");
 
-        public EntityID ID;
+        public EntityID ID = id;
+
+        public string Flag = data.Attr("flag");
+        private bool flagEnabled;
+        public bool CycleWhenFlagOn = data.Bool("cycleWhenFlagOn");
+        public bool CycleWhenFlagOff = data.Bool("cycleWhenFlagOff");
 
         public static int CurrentIndex
         {
             get { return DzhakeHelperModule.Session.ActiveSequenceIndex; }
             set { DzhakeHelperModule.Session.ActiveSequenceIndex = value; }
-        }
-
-        public SequenceBlockManager(EntityData data, Vector2 offset, EntityID id) : base(data.Position + offset)
-        {
-            startWith = data.Int("startWith");
-            everyDash = data.Bool("everyDash");
-            ID = id;
         }
 
         public override void Awake(Scene scene)
@@ -58,15 +55,23 @@ namespace Celeste.Mod.DzhakeHelper.Entities
 
         public override void Update()
         {
-            if (Scene is Level level && level.Session != null)
-                for (int i = 0; i < 4; i++)
-                {
-                    if (i == CurrentIndex || !level.Session.GetFlag($"DzhakeHelper_Sequence_{i}")) continue;
-                    //if this is not active color and there is flag
-                    SetSequenceBlocks(i);
-                    break;
-                }
-            
+            Level? level = Scene as Level;
+            if (level?.Session is null) return;
+
+            for (int i = 0; i < 4; i++)
+            {
+                //if this is not active color and there is flag
+                if (i == CurrentIndex || !level.Session.GetFlag($"DzhakeHelper_Sequence_{i}")) continue;
+                SetSequenceBlocks(i);
+                break;
+            }
+
+            bool flag = Util.ParseFlags(level, Flag);
+            if (flag != flagEnabled)
+            {
+                flagEnabled = flag;
+                CycleSequenceBlocks();
+            }
 
             base.Update();
         }
@@ -74,6 +79,7 @@ namespace Celeste.Mod.DzhakeHelper.Entities
 
         public void UpdateBlocks()
         {
+
             foreach (SequenceBlock entity in Scene.Tracker.GetEntities<SequenceBlock>())
                 entity.Activated = entity.Index == CurrentIndex;
 
@@ -85,12 +91,12 @@ namespace Celeste.Mod.DzhakeHelper.Entities
 
             foreach (SequenceComponent component1 in Scene.Tracker.GetComponents<SequenceComponent>())
                 component1.Activated = component1.Index == CurrentIndex;
+            
+            Session? session = (Scene as Level)?.Session;
+            if (session is null) return;
 
             for (int i = 0; i < 4; i++)
-            {
-                (Scene as Level)?.Session?.SetFlag($"DzhakeHelper_Sequence_{i}", false);
-            }
-            (Scene as Level)?.Session?.SetFlag($"DzhakeHelper_Sequence_{CurrentIndex}");
+                session.SetFlag($"DzhakeHelper_Sequence_{i}", i == CurrentIndex);
         }
 
         public void CycleSequenceBlocks(int times = 1)

@@ -22,7 +22,11 @@ entities.DzhakeHelper/SequenceBlock.attributes.description.backgroundBlock=If ch
 
 ## Sequence Block Manager
 entities.DzhakeHelper/SequenceBlockManager.placements.name.normal=Sequence Block Controller
-entities.DzhakeHelper/SequenceBlockManager.attributes.description.everyDash=If checked then cycle blocks after every dash.
+entities.DzhakeHelper/SequenceBlockManager.attributes.description.everyDash=If checked then blocks cycle after every dash.
+entities.DzhakeHelper/SequenceBlockManager.attributes.description.flag=Flag which is used for "Cycle When Flag On" and "Cycle When Flag Off".
+entities.DzhakeHelper/SequenceBlockManager.attributes.description.cycleWhenFlagOn=If checked, then blocks cycle when flag is active after being inactive.
+entities.DzhakeHelper/SequenceBlockManager.attributes.description.cycleWhenFlagOff=If checked, then blocks cycle when flag is inactive after being active.
+
 
 ## Sequence Touch Switch
 entities.DzhakeHelper/SequenceTouchSwitch.placements.name.normal=Sequence Touch Switch
