@@ -70,7 +70,7 @@ namespace Celeste.Mod.DzhakeHelper.Entities
             if (flag != flagEnabled)
             {
                 flagEnabled = flag;
-                CycleSequenceBlocks();
+                if ((flagEnabled && CycleWhenFlagOn) || (!flagEnabled && CycleWhenFlagOff)) CycleSequenceBlocks();
             }
 
             base.Update();
