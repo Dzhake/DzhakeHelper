@@ -24,7 +24,7 @@ public static class Extensions
         float firstPower = 1 - secondPower;
         if (secondPower < 0 || secondPower > 0.1) // if broken
         {
-            Logger.Log(LogLevel.Debug,"DzhakeHelper/Extensions/Mix()",$"Variable 'second power' is ${secondPower}, but it should be between 0 and 1");
+            Logger.Log(LogLevel.Warn,"DzhakeHelper/Extensions/Mix()",$"Variable 'second power' is ${secondPower}, but it should be between 0 and 1");
             return color;
         }
         color.R = (byte)((color.R * firstPower) + (other.R * secondPower));

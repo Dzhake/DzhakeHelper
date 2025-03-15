@@ -49,7 +49,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Dialog\" />
     <Folder Include="Loenn\libraries\" />
   </ItemGroup>
 
