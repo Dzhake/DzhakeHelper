@@ -194,64 +194,36 @@ namespace Celeste.Mod.DzhakeHelper.Entities
                     if (flag && flag2 && flag3 && flag4)
                     {
                         if (!CheckForSame(num5 + 8f, num6 - 8f))
-                        {
                             SetImage(num5, num6, 3, 0);
-                        }
                         else if (!CheckForSame(num5 - 8f, num6 - 8f))
-                        {
                             SetImage(num5, num6, 3, 1);
-                        }
                         else if (!CheckForSame(num5 + 8f, num6 + 8f))
-                        {
                             SetImage(num5, num6, 3, 2);
-                        }
                         else if (!CheckForSame(num5 - 8f, num6 + 8f))
-                        {
                             SetImage(num5, num6, 3, 3);
-                        }
                         else
-                        {
                             SetImage(num5, num6, 1, 1);
-                        }
                     }
                     else if (flag && flag2 && !flag3 && flag4)
-                    {
                         SetImage(num5, num6, 1, 0);
-                    }
                     else if (flag && flag2 && flag3 && !flag4)
-                    {
                         SetImage(num5, num6, 1, 2);
-                    }
                     else if (flag && !flag2 && flag3 && flag4)
-                    {
                         SetImage(num5, num6, 2, 1);
-                    }
                     else if (!flag && flag2 && flag3 && flag4)
-                    {
                         SetImage(num5, num6, 0, 1);
-                    }
                     else if (flag && !flag2 && !flag3 && flag4)
-                    {
                         SetImage(num5, num6, 2, 0);
-                    }
                     else if (!flag && flag2 && !flag3 && flag4)
-                    {
                         SetImage(num5, num6, 0, 0);
-                    }
                     else if (flag && !flag2 && flag3 && !flag4)
-                    {
                         SetImage(num5, num6, 2, 2);
-                    }
                     else if (!flag && flag2 && flag3 && !flag4)
-                    {
                         SetImage(num5, num6, 0, 2);
-                    }
                 }
             }
             if (!Collidable)
-            {
                 DisableStaticMovers();
-            }
             UpdateVisualState();
         }
 
@@ -303,6 +275,7 @@ namespace Celeste.Mod.DzhakeHelper.Entities
         public override void Update()
         {
             base.Update();
+            
             if (groupLeader && Activated && !Collidable)
             {
                 bool blocked = false;
@@ -336,42 +309,30 @@ namespace Celeste.Mod.DzhakeHelper.Entities
 
         public bool BlockedCheck()
         {
+            if (Scene is null) return true;
             TheoCrystal theoCrystal = CollideFirst<TheoCrystal>();
             if (BlockedByTheo && theoCrystal != null && !TryActorWiggleUp(theoCrystal))
-            {
                 return true;
-            }
             Player player = CollideFirst<Player>();
             if (BlockedByPlayer && player != null && !TryActorWiggleUp(player))
-            {
                 return true;
-            }
             return false;
         }
 
         private void UpdateVisualState()
         {
-            if (!Collidable)
-            {
-                base.Depth = 8990;
-            }
+            if (!Collidable) Depth = 8990;
             else
             {
-                Player entity = base.Scene.Tracker.GetEntity<Player>();
-                if (entity != null && entity.Top >= base.Bottom - 1f)
-                {
-                    base.Depth = 10;
-                }
-                else
-                {
-                    base.Depth = -10;
-                }
+                Player entity = Scene.Tracker.GetEntity<Player>();
+                if (entity != null && entity.Top >= Bottom - 1f) Depth = 10;
+                else Depth = -10;
             }
             foreach (StaticMover staticMover in staticMovers)
             {
-                staticMover.Entity.Depth = base.Depth + 1;
+                staticMover.Entity.Depth = Depth + 1;
             }
-            side.Depth = base.Depth + 5;
+            side.Depth = Depth + 5;
             side.Visible = blockHeight > 0;
             occluder.Visible = Collidable;
             foreach (Image item in solid)
@@ -395,17 +356,10 @@ namespace Celeste.Mod.DzhakeHelper.Entities
                 }
                 foreach (StaticMover staticMover2 in item3.staticMovers)
                 {
-                    if (!(staticMover2.Entity is Spikes spikes))
-                    {
-                        continue;
-                    }
+                    if (staticMover2.Entity is not Spikes spikes) continue;
                     foreach (Component component in spikes.Components)
-                    {
                         if (component is Image image)
-                        {
                             image.Scale = scale;
-                        }
-                    }
                 }
             }
         }
