@@ -27,15 +27,15 @@ namespace Celeste.Mod.DzhakeHelper.Entities
 
         public VertexLight light;
 
-        public ParticleEmitter shimmerParticles;
+        public ParticleEmitter? shimmerParticles;
 
         public float wobble;
 
         public bool wobbleActive;
 
-        public Tween tween;
+        public Tween? tween;
 
-        public Alarm alarm;
+        public Alarm? alarm;
 
         public Vector2[] nodes;
         public bool BubbleReturn;
