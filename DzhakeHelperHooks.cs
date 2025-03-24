@@ -4,6 +4,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoMod.Cil;
 using Monocle;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Celeste.Mod.DzhakeHelper
 {
@@ -148,10 +150,13 @@ namespace Celeste.Mod.DzhakeHelper
         private static void PlayerSpawn(Player self)
         {
             if (DzhakeHelperModule.Session?.CurrentKeys == null || self == null) return;
-
+            List<EntityID> existingIDs = new();
             Scene level = self.Scene;
+            foreach (Follower currentFollower in self.Leader.Followers) existingIDs.Add(currentFollower.ParentEntityID);
+
             foreach (CustomKey.CustomKeyInfo info in DzhakeHelperModule.Session.CurrentKeys)
             {
+                if (existingIDs.Contains(info.ID)) return;
                 CustomKey key = new(info);
                 self.Leader.GainFollower(key.follower);
                 key.Position = self.Position + new Vector2(-12 * (int)self.Facing, -8f);
