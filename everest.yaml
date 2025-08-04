@@ -1,8 +1,8 @@
 - Name: DzhakeHelper
-  Version: 1.4.13
+  Version: 1.4.14
   DLL: bin/DzhakeHelper.dll
   Dependencies:
     - Name: Everest
-      Version: 1.3471.0
+      Version: 1.5577.0
     - Name: VortexHelper
       Version: 1.2.14

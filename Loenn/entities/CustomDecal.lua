@@ -21,6 +21,7 @@ local CustomDecal = {
             pathRoot = 0,
             updateSpriteOnlyIfFlag = true,
             hiRes = false,
+            removeDecalsFromPath = true,
         },
     },
     fieldInformation = {
@@ -38,7 +39,10 @@ local CustomDecal = {
     },
     fieldOrder = {
         "x","y","pathRoot","texture","depth","scaleX","scaleY","rotation","color","flags","hiRes","updateSpriteOnlyIfFlag","removeDecalsFromPath"
-    }
+    },
+    ignoredFields = {
+        {"_name", "_id", "originX", "originY", "removeDecalsFromPath"}    
+    },
 }
 
 function CustomDecal.texture(room, entity)

@@ -17,7 +17,7 @@ namespace Celeste.Mod.DzhakeHelper.Entities
 
         public float RespawnTimer;
 
-        public float RespawnTime = 1f;
+        public float RespawnTime = 0.1f;
 
         public bool DashToLeft;
         public bool DashToRight;
@@ -44,6 +44,7 @@ namespace Celeste.Mod.DzhakeHelper.Entities
             NewSpeed = data.Float("newSpeed", -400);
             RefillDash = data.Bool("refillDash", false);
             SetSpeedXToZero = data.Bool("setSpeedxToZero", true);
+            RespawnTime = data.Float("respawnTime", 0.1f);
 
             string str = data.Attr("sprite");
             Add(sprite = new Sprite(GFX.Game, str + "idle"));
@@ -68,12 +69,6 @@ namespace Celeste.Mod.DzhakeHelper.Entities
             Add(light = new VertexLight(Color.White, 1f, 16, 48));
         }
 
-
-        public override void Added(Scene scene)
-        {
-            base.Added(scene);
-        }
-
         public override void Update()
         {
             base.Update();
@@ -88,58 +83,40 @@ namespace Celeste.Mod.DzhakeHelper.Entities
         }
 
 
-        public override void Render()
-        {
-            base.Render();
-        }
-
         private void OnPlayer(Player player)
         {
-            if (player.DashAttacking
-                && RespawnTimer <= 0
-                && (((player.DashDir == Util.Directions[Util.DirectionEnum.Right]) && DashToRight)
-                || ((player.DashDir == Util.Directions[Util.DirectionEnum.Left]) && DashToLeft)
-                || ((player.DashDir == Util.Directions[Util.DirectionEnum.Bottom]) && DashToBottom)
-                || ((player.DashDir == Util.Directions[Util.DirectionEnum.Top]) && DashToTop)
-                || (player.DashDir.X > 0f && player.DashDir.Y > 0f && DashToBottomRight)
-                || (player.DashDir.X < 0f && player.DashDir.Y > 0f && DashToBottomLeft)
-                || (player.DashDir.X > 0f && player.DashDir.Y < 0f && DashToTopRight)
-                || (player.DashDir.X < 0f && player.DashDir.Y < 0f && DashToTopLeft)))
-            {
-                player.DashDir = new Vector2(0, -1);
+            if (!player.DashAttacking || !(RespawnTimer <= 0) || (((player.DashDir != Util.Directions[Util.DirectionEnum.Right]) || !DashToRight) && ((player.DashDir != Util.Directions[Util.DirectionEnum.Left]) || !DashToLeft) && ((player.DashDir != Util.Directions[Util.DirectionEnum.Bottom]) || !DashToBottom) && ((player.DashDir != Util.Directions[Util.DirectionEnum.Top]) || !DashToTop) && (!(player.DashDir.X > 0f) || !(player.DashDir.Y > 0f) || !DashToBottomRight) && (!(player.DashDir.X < 0f) || !(player.DashDir.Y > 0f) || !DashToBottomLeft) && (!(player.DashDir.X > 0f) || !(player.DashDir.Y < 0f) || !DashToTopRight) && (!(player.DashDir.X < 0f) || !(player.DashDir.Y < 0f) || !DashToTopLeft))) return;
+            
+            player.DashDir = new Vector2(0, -1);
 
-                Collider collider = player.Collider;
-                player.Collider = player.normalHitbox;
-                //player.MoveVExact((int)(Y - base.Bottom));
-                if (!player.Inventory.NoRefills && RefillDash)
-                {
-                    player.RefillDash();
-                }
+            //uhh wtf is this
+            Collider collider = player.Collider;
+            player.Collider = player.normalHitbox;
+            //player.MoveVExact((int)(Y - base.Bottom));
+            if (!player.Inventory.NoRefills && RefillDash)
+                player.RefillDash();
 
-                RespawnTimer = 0.1f;
+            RespawnTimer = RespawnTime;
 
-                player.RefillStamina();
-                player.StateMachine.State = 0;
-                player.jumpGraceTimer = 0f;
-                player.varJumpTimer = 0.2f;
-                player.AutoJump = true;
-                player.AutoJumpTimer = 0f;
-                player.wallSlideTimer = 1.2f;
-                player.wallBoostTimer = 0f;
-                player.varJumpSpeed = (player.Speed.Y = NewSpeed);
-                player.launched = false;
-                Input.Rumble(RumbleStrength.Light, RumbleLength.Medium);
-                player.Sprite.Scale = new Vector2(0.6f, 1.4f);
-                player.Collider = collider;
+            player.RefillStamina();
+            player.StateMachine.State = 0;
+            player.jumpGraceTimer = 0f;
+            player.varJumpTimer = 0.2f;
+            player.AutoJump = true;
+            player.AutoJumpTimer = 0f;
+            player.wallSlideTimer = 1.2f;
+            player.wallBoostTimer = 0f;
+            player.varJumpSpeed = (player.Speed.Y = NewSpeed);
+            player.launched = false;
+            Input.Rumble(RumbleStrength.Light, RumbleLength.Medium);
+            player.Sprite.Scale = new Vector2(0.6f, 1.4f);
+            player.Collider = collider;
 
-                if (SetSpeedXToZero) player.Speed.X = 0f;
+            if (SetSpeedXToZero) player.Speed.X = 0f;
 
-                (Scene as Level).ParticlesFG.Emit(BadelineOldsite.P_Vanish, 12, base.Center, Vector2.One * 6f);
-                if (!string.IsNullOrEmpty(sfx))
-                {
-                    SoundEmitter.Play(sfx);
-                }
-            }
+            (Scene as Level)?.ParticlesFG.Emit(BadelineOldsite.P_Vanish, 12, base.Center, Vector2.One * 6f);
+            if (!string.IsNullOrEmpty(sfx))
+                SoundEmitter.Play(sfx);
         }
     }
 }

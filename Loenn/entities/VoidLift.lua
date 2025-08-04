@@ -18,7 +18,8 @@ local VoidLift = {
             dashToTopLeft = false,
             setSpeedxToZero = true,
             sprite = "objects/DzhakeHelper/voidLift/",
-            sfx = ""
+            sfx = "",
+            respawnTime = 0.1,
         },
     },
     selection = function(room, entity)

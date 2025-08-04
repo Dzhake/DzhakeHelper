@@ -4,15 +4,12 @@ using Microsoft.Xna.Framework;
 using Monocle;
 
 
-
 namespace Celeste.Mod.DzhakeHelper.Entities
 {
     [CustomEntity("DzhakeHelper/SequenceBlock")]
-
     [Tracked(true)]
     public class SequenceBlock : Solid
     {
-
         private class BoxSide(SequenceBlock block, Color color) : Entity
         {
             public override void Render()
@@ -25,6 +22,9 @@ namespace Celeste.Mod.DzhakeHelper.Entities
         }
 
         public int Index;
+
+        public int BlendIndex;
+        public bool BlendIndexEqualsColorIndex;
 
         public bool BlockedByPlayer;
 
@@ -45,7 +45,7 @@ namespace Celeste.Mod.DzhakeHelper.Entities
 
         public int blockHeight = 2;
 
-        public List<SequenceBlock> group;
+        public List<SequenceBlock>? group;
 
         private bool groupLeader;
 
@@ -81,9 +81,12 @@ namespace Celeste.Mod.DzhakeHelper.Entities
             Collidable = false;
             ID = id;
             Index = data.Int("index");
+            BlendIndexEqualsColorIndex = data.Bool("blendIndexEqualsColorIndex");
+            BlendIndex = BlendIndexEqualsColorIndex ? Index : data.Int("blendIndex");
+            
             BlockedByPlayer = data.Bool("blockedByPlayer");
-            ImagePath = data.Attr("imagePath","objects/DzhakeHelper/sequenceBlock/");
-            BackgroundBlock = data.Bool("backgroundBlock",true);
+            ImagePath = data.Attr("imagePath", "objects/DzhakeHelper/sequenceBlock/");
+            BackgroundBlock = data.Bool("backgroundBlock", true);
             BlockedByTheo = data.Bool("blockedByTheo");
             //BlockedByHoldables = data.Bool("blockedByHoldables");
             UseCustomColor = data.Bool("useCustomColor");
@@ -95,24 +98,25 @@ namespace Celeste.Mod.DzhakeHelper.Entities
             {
                 switch (Index)
                 {
-                    default:
-                        color = Calc.HexToColor("5c5bda");
-                        break;
-                    case 1:
-                        color = Calc.HexToColor("ff0051");
-                        break;
-                    case 2:
-                        color = Calc.HexToColor("ffd700");
-                        break;
-                    case 3:
-                        color = Calc.HexToColor("49dc88");
-                        break;
+                default:
+                    color = Calc.HexToColor("5c5bda");
+                    break;
+                case 1:
+                    color = Calc.HexToColor("ff0051");
+                    break;
+                case 2:
+                    color = Calc.HexToColor("ffd700");
+                    break;
+                case 3:
+                    color = Calc.HexToColor("49dc88");
+                    break;
                 }
             }
+
             Add(occluder = new LightOcclude());
 
             Color c = Calc.HexToColor("667da5");
-            PressedColor = new Color((float)(int)c.R / 255f * ((float)(int)color.R / 255f), (float)(int)c.G / 255f * ((float)(int)color.G / 255f), (float)(int)c.B / 255f * ((float)(int)color.B / 255f), 1f);
+            PressedColor = new Color(c.R / 255f * (color.R / 255f), c.G / 255f * (color.G / 255f), c.B / 255f * (color.B / 255f), 1f);
         }
 
 
@@ -122,19 +126,21 @@ namespace Celeste.Mod.DzhakeHelper.Entities
             scene.Add(side = new BoxSide(this, PressedColor));
             foreach (StaticMover staticMover in staticMovers)
             {
-                if (staticMover.Entity is Spikes spikes)
+                switch (staticMover.Entity)
                 {
+                case Spikes spikes:
                     spikes.EnabledColor = this.color;
                     spikes.DisabledColor = PressedColor;
                     spikes.VisibleWhenDisabled = true;
                     spikes.SetSpikeColor(this.color);
-                }
-                if (staticMover.Entity is Spring spring)
-                {
+                    break;
+                case Spring spring:
                     spring.DisabledColor = PressedColor;
                     spring.VisibleWhenDisabled = true;
+                    break;
                 }
             }
+
             if (group == null)
             {
                 groupLeader = true;
@@ -153,19 +159,23 @@ namespace Celeste.Mod.DzhakeHelper.Entities
                     {
                         num = item.Left;
                     }
+
                     if (item.Right > num2)
                     {
                         num2 = item.Right;
                     }
+
                     if (item.Bottom > num4)
                     {
                         num4 = item.Bottom;
                     }
+
                     if (item.Top < num3)
                     {
                         num3 = item.Top;
                     }
                 }
+
                 groupOrigin = new Vector2((int)(num + (num2 - num) / 2f), (int)num4);
                 wigglerScaler = new Vector2(Calc.ClampedMap(num2 - num, 32f, 96f, 1f, 0.2f), Calc.ClampedMap(num4 - num3, 32f, 96f, 1f, 0.2f));
                 Add(wiggler = Wiggler.Create(0.3f, 3f));
@@ -176,6 +186,7 @@ namespace Celeste.Mod.DzhakeHelper.Entities
                     item2.groupOrigin = groupOrigin;
                 }
             }
+
             foreach (StaticMover staticMover2 in staticMovers)
             {
                 if (staticMover2.Entity is Spikes spikes2)
@@ -183,6 +194,7 @@ namespace Celeste.Mod.DzhakeHelper.Entities
                     spikes2.SetOrigins(groupOrigin);
                 }
             }
+
             for (float num5 = base.Left; num5 < base.Right; num5 += 8f)
             {
                 for (float num6 = base.Top; num6 < base.Bottom; num6 += 8f)
@@ -191,7 +203,9 @@ namespace Celeste.Mod.DzhakeHelper.Entities
                     bool flag2 = CheckForSame(num5 + 8f, num6);
                     bool flag3 = CheckForSame(num5, num6 - 8f);
                     bool flag4 = CheckForSame(num5, num6 + 8f);
-                    if (flag && flag2 && flag3 && flag4)
+                    switch (flag)
+                    {
+                    case true when flag2 && flag3 && flag4:
                     {
                         if (!CheckForSame(num5 + 8f, num6 - 8f))
                             SetImage(num5, num6, 3, 0);
@@ -203,25 +217,36 @@ namespace Celeste.Mod.DzhakeHelper.Entities
                             SetImage(num5, num6, 3, 3);
                         else
                             SetImage(num5, num6, 1, 1);
+                        break;
                     }
-                    else if (flag && flag2 && !flag3 && flag4)
+                    case true when flag2 && !flag3 && flag4:
                         SetImage(num5, num6, 1, 0);
-                    else if (flag && flag2 && flag3 && !flag4)
+                        break;
+                    case true when flag2 && flag3 && !flag4:
                         SetImage(num5, num6, 1, 2);
-                    else if (flag && !flag2 && flag3 && flag4)
+                        break;
+                    case true when !flag2 && flag3 && flag4:
                         SetImage(num5, num6, 2, 1);
-                    else if (!flag && flag2 && flag3 && flag4)
+                        break;
+                    case false when flag2 && flag3 && flag4:
                         SetImage(num5, num6, 0, 1);
-                    else if (flag && !flag2 && !flag3 && flag4)
+                        break;
+                    case true when !flag2 && !flag3 && flag4:
                         SetImage(num5, num6, 2, 0);
-                    else if (!flag && flag2 && !flag3 && flag4)
+                        break;
+                    case false when flag2 && !flag3 && flag4:
                         SetImage(num5, num6, 0, 0);
-                    else if (flag && !flag2 && flag3 && !flag4)
+                        break;
+                    case true when !flag2 && flag3 && !flag4:
                         SetImage(num5, num6, 2, 2);
-                    else if (!flag && flag2 && flag3 && !flag4)
+                        break;
+                    case false when flag2 && flag3 && !flag4:
                         SetImage(num5, num6, 0, 2);
+                        break;
+                    }
                 }
             }
+
             if (!Collidable)
                 DisableStaticMovers();
             UpdateVisualState();
@@ -229,26 +254,22 @@ namespace Celeste.Mod.DzhakeHelper.Entities
 
         private void FindInGroup(SequenceBlock block)
         {
-            foreach (SequenceBlock entity in base.Scene.Tracker.GetEntities<SequenceBlock>())
+            if (group is null) return;
+            foreach (SequenceBlock entity in Scene.Tracker.GetEntities<SequenceBlock>())
             {
-                if (entity != this && entity != block && entity.Index == Index && (entity.CollideRect(new Rectangle((int)block.X - 1, (int)block.Y, (int)block.Width + 2, (int)block.Height)) || entity.CollideRect(new Rectangle((int)block.X, (int)block.Y - 1, (int)block.Width, (int)block.Height + 2))) && !group.Contains(entity))
-                {
-                    group.Add(entity);
-                    FindInGroup(entity);
-                    entity.group = group;
-                }
+                if (entity == this || entity == block || entity.BlendIndex != BlendIndex || (!entity.CollideRect(new Rectangle((int)block.X - 1, (int)block.Y, (int)block.Width + 2, (int)block.Height)) && !entity.CollideRect(new Rectangle((int)block.X, (int)block.Y - 1, (int)block.Width, (int)block.Height + 2))) || group.Contains(entity)) continue;
+                group.Add(entity);
+                FindInGroup(entity);
+                entity.group = group;
             }
         }
 
         private bool CheckForSame(float x, float y)
         {
-            foreach (SequenceBlock entity in base.Scene.Tracker.GetEntities<SequenceBlock>())
-            {
+            foreach (SequenceBlock entity in Scene.Tracker.GetEntities<SequenceBlock>())
                 if (entity.Index == Index && entity.Collider.Collide(new Rectangle((int)x, (int)y, 8, 8)))
-                {
                     return true;
-                }
-            }
+
             return false;
         }
 
@@ -275,18 +296,18 @@ namespace Celeste.Mod.DzhakeHelper.Entities
         public override void Update()
         {
             base.Update();
-            
+
             if (groupLeader && Activated && !Collidable)
             {
+                if (group is null) return;
                 bool blocked = false;
                 foreach (SequenceBlock item in group)
-                {
                     if (item.BlockedCheck())
                     {
                         blocked = true;
                         break;
                     }
-                }
+
                 if (!blocked)
                 {
                     foreach (SequenceBlock item2 in group)
@@ -295,6 +316,7 @@ namespace Celeste.Mod.DzhakeHelper.Entities
                         item2.EnableStaticMovers();
                         item2.ShiftSize(-1);
                     }
+
                     wiggler.Start();
                 }
             }
@@ -304,6 +326,7 @@ namespace Celeste.Mod.DzhakeHelper.Entities
                 Collidable = false;
                 DisableStaticMovers();
             }
+
             UpdateVisualState();
         }
 
@@ -328,10 +351,12 @@ namespace Celeste.Mod.DzhakeHelper.Entities
                 if (entity != null && entity.Top >= Bottom - 1f) Depth = 10;
                 else Depth = -10;
             }
+
             foreach (StaticMover staticMover in staticMovers)
             {
                 staticMover.Entity.Depth = Depth + 1;
             }
+
             side.Depth = Depth + 5;
             side.Visible = blockHeight > 0;
             occluder.Visible = Collidable;
@@ -339,14 +364,17 @@ namespace Celeste.Mod.DzhakeHelper.Entities
             {
                 item.Visible = Collidable;
             }
+
             foreach (Image item2 in pressed)
             {
                 item2.Visible = !Collidable;
             }
+
             if (!groupLeader)
             {
                 return;
             }
+
             Vector2 scale = new Vector2(1f + wiggler.Value * 0.05f * wigglerScaler.X, 1f + wiggler.Value * 0.15f * wigglerScaler.Y);
             foreach (SequenceBlock item3 in group)
             {
@@ -354,6 +382,7 @@ namespace Celeste.Mod.DzhakeHelper.Entities
                 {
                     item4.Scale = scale;
                 }
+
                 foreach (StaticMover staticMover2 in item3.staticMovers)
                 {
                     if (staticMover2.Entity is not Spikes spikes) continue;
@@ -380,6 +409,7 @@ namespace Celeste.Mod.DzhakeHelper.Entities
                     return false;
                 }
             }
+
             bool collidable = Collidable;
             Collidable = true;
             for (int i = 1; i <= 4; i++)
@@ -391,6 +421,7 @@ namespace Celeste.Mod.DzhakeHelper.Entities
                     return true;
                 }
             }
+
             Collidable = collidable;
             return false;
         }
@@ -423,6 +454,4 @@ namespace Celeste.Mod.DzhakeHelper.Entities
             all.Add(pressed);
         }
     }
-
-
 }

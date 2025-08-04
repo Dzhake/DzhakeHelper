@@ -19,6 +19,41 @@ entities.DzhakeHelper/SequenceBlock.placements.name.sequence_block_3=Sequence Bl
 entities.DzhakeHelper/SequenceBlock.attributes.description.blockedByPlayer=If checked then block will not appear if there is a player in front of it.
 entities.DzhakeHelper/SequenceBlock.attributes.description.blockedByTheo=If checked then block will not appear if there is a theo crystal in front of it.
 entities.DzhakeHelper/SequenceBlock.attributes.description.backgroundBlock=If checked then block will have static dark background (like cassette blocks), on by default.
+entities.DzhakeHelper/SequenceBlock.attributes.description.blendIndex=Sequence blocks with same "Blend Index" merge together. If "Blend Index Equals Color Index" this value is ignored.
+entities.DzhakeHelper/SequenceBlock.attributes.description.blendIndexEqualsColorIndex=If checked, "Blend Index" is set to same value as "Index" (0-3).
+
+## Sequence Zip Mover
+entities.DzhakeHelper/SequenceZipMover.placements.name.sequence_zipMover_0=Sequence Zip Mover (0 - Blue)
+entities.DzhakeHelper/SequenceZipMover.placements.name.sequence_zipMover_1=Sequence Zip Mover (1 - Rose)
+entities.DzhakeHelper/SequenceZipMover.placements.name.sequence_zipMover_2=Sequence Zip Mover (2 - Bright Sun)
+entities.DzhakeHelper/SequenceZipMover.placements.name.sequence_zipMover_3=Sequence Zip Mover (3 - Malachite)
+entities.DzhakeHelper/SequenceZipMover.attributes.description.blockedByPlayer=If checked then block will not appear if there is a player in front of it.
+entities.DzhakeHelper/SequenceZipMover.attributes.description.blockedByTheo=If checked then block will not appear if there is a theo crystal in front of it.
+entities.DzhakeHelper/SequenceZipMover.attributes.description.backgroundBlock=If checked then block will have static dark background (like cassette blocks), on by default.
+entities.DzhakeHelper/SequenceZipMover.attributes.description.blendIndex=Sequence blocks with same "Blend Index" merge together. If "Blend Index Equals Color Index" this value is ignored.
+entities.DzhakeHelper/SequenceZipMover.attributes.description.blendIndexEqualsColorIndex=If checked, "Blend Index" is set to same value as "Index" (0-3).
+
+## Sequence Falling Block
+entities.DzhakeHelper/SequenceFallingBlock.placements.name.sequence_block_0=Sequence Falling Block (0 - Blue)
+entities.DzhakeHelper/SequenceFallingBlock.placements.name.sequence_block_1=Sequence Falling Block (1 - Rose)
+entities.DzhakeHelper/SequenceFallingBlock.placements.name.sequence_block_2=Sequence Falling Block (2 - Bright Sun)
+entities.DzhakeHelper/SequenceFallingBlock.placements.name.sequence_block_3=Sequence Falling Block (3 - Malachite)
+entities.DzhakeHelper/SequenceFallingBlock.attributes.description.blockedByPlayer=If checked then block will not appear if there is a player in front of it.
+entities.DzhakeHelper/SequenceFallingBlock.attributes.description.blockedByTheo=If checked then block will not appear if there is a theo crystal in front of it.
+entities.DzhakeHelper/SequenceFallingBlock.attributes.description.backgroundBlock=If checked then block will have static dark background (like cassette blocks), on by default.
+entities.DzhakeHelper/SequenceFallingBlock.attributes.description.blendIndex=Sequence blocks with same "Blend Index" merge together. If "Blend Index Equals Color Index" this value is ignored.
+entities.DzhakeHelper/SequenceFallingBlock.attributes.description.blendIndexEqualsColorIndex=If checked, "Blend Index" is set to same value as "Index" (0-3).
+
+## Sequence Swap Block
+entities.DzhakeHelper/SequenceSwapBlock.placements.name.sequence_block_0=Sequence Swap Block (0 - Blue)
+entities.DzhakeHelper/SequenceSwapBlock.placements.name.sequence_block_1=Sequence Swap Block (1 - Rose)
+entities.DzhakeHelper/SequenceSwapBlock.placements.name.sequence_block_2=Sequence Swap Block (2 - Bright Sun)
+entities.DzhakeHelper/SequenceSwapBlock.placements.name.sequence_block_3=Sequence Swap Block (3 - Malachite)
+entities.DzhakeHelper/SequenceSwapBlock.attributes.description.blockedByPlayer=If checked then block will not appear if there is a player in front of it.
+entities.DzhakeHelper/SequenceSwapBlock.attributes.description.blockedByTheo=If checked then block will not appear if there is a theo crystal in front of it.
+entities.DzhakeHelper/SequenceSwapBlock.attributes.description.backgroundBlock=If checked then block will have static dark background (like cassette blocks), on by default.
+entities.DzhakeHelper/SequenceSwapBlock.attributes.description.blendIndex=Sequence blocks with same "Blend Index" merge together. If "Blend Index Equals Color Index" this value is ignored.
+entities.DzhakeHelper/SequenceSwapBlock.attributes.description.blendIndexEqualsColorIndex=If checked, "Blend Index" is set to same value as "Index" (0-3).
 
 ## Sequence Block Manager
 entities.DzhakeHelper/SequenceBlockManager.placements.name.normal=Sequence Block Controller
@@ -32,33 +67,6 @@ entities.DzhakeHelper/SequenceBlockManager.attributes.description.cycleWhenFlagO
 entities.DzhakeHelper/SequenceTouchSwitch.placements.name.normal=Sequence Touch Switch
 entities.DzhakeHelper/SequenceTouchSwitch.attributes.description.group=When all touch switches from same group are activated Sequence blocks will cycle. Two groups means that they will cycle twice.
 entities.DzhakeHelper/SequenceTouchSwitch.attributes.name.groudReset=Reset on ground.
-
-## Sequence Zip Mover
-entities.DzhakeHelper/SequenceZipMover.placements.name.sequence_zipMover_0=Sequence Zip Mover (0 - Blue)
-entities.DzhakeHelper/SequenceZipMover.placements.name.sequence_zipMover_1=Sequence Zip Mover (1 - Rose)
-entities.DzhakeHelper/SequenceZipMover.placements.name.sequence_zipMover_2=Sequence Zip Mover (2 - Bright Sun)
-entities.DzhakeHelper/SequenceZipMover.placements.name.sequence_zipMover_3=Sequence Zip Mover (3 - Malachite)
-entities.DzhakeHelper/SequenceZipMover.attributes.description.blockedByPlayer=If checked then block will not appear if there is a player in front of it.
-entities.DzhakeHelper/SequenceZipMover.attributes.description.blockedByTheo=If checked then block will not appear if there is a theo crystal in front of it.
-entities.DzhakeHelper/SequenceBlock.attributes.description.backgroundBlock=If checked then block will have static dark background (like cassette blocks), on by default.
-
-## Sequence Falling Block
-entities.DzhakeHelper/SequenceFallingBlock.placements.name.sequence_block_0=Sequence Falling Block (0 - Blue)
-entities.DzhakeHelper/SequenceFallingBlock.placements.name.sequence_block_1=Sequence Falling Block (1 - Rose)
-entities.DzhakeHelper/SequenceFallingBlock.placements.name.sequence_block_2=Sequence Falling Block (2 - Bright Sun)
-entities.DzhakeHelper/SequenceFallingBlock.placements.name.sequence_block_3=Sequence Falling Block (3 - Malachite)
-entities.DzhakeHelper/SequenceFallingBlock.attributes.description.blockedByPlayer=If checked then block will not appear if there is a player in front of it.
-entities.DzhakeHelper/SequenceFallingBlock.attributes.description.blockedByTheo=If checked then block will not appear if there is a theo crystal in front of it.
-entities.DzhakeHelper/SequenceFallingBlock.attributes.description.backgroundBlock=If checked then block will have static dark background (like cassette blocks), on by default.
-
-## Sequence Swap Block
-entities.DzhakeHelper/SequenceSwapBlock.placements.name.sequence_block_0=Sequence Swap Block (0 - Blue)
-entities.DzhakeHelper/SequenceSwapBlock.placements.name.sequence_block_1=Sequence Swap Block (1 - Rose)
-entities.DzhakeHelper/SequenceSwapBlock.placements.name.sequence_block_2=Sequence Swap Block (2 - Bright Sun)
-entities.DzhakeHelper/SequenceSwapBlock.placements.name.sequence_block_3=Sequence Swap Block (3 - Malachite)
-entities.DzhakeHelper/SequenceSwapBlock.attributes.description.blockedByPlayer=If checked then block will not appear if there is a player in front of it.
-entities.DzhakeHelper/SequenceSwapBlock.attributes.description.blockedByTheo=If checked then block will not appear if there is a theo crystal in front of it.
-entities.DzhakeHelper/SequenceSwapBlock.attributes.description.backgroundBlock=If checked then block will have static dark background (like cassette blocks), on by default.
 
 ## Custom Move Block
 entities.DzhakeHelper/CustomMoveBlock.placements.name.up_steer=Custom Move Block (Up, Steerable)
@@ -83,15 +91,12 @@ entities.DzhakeHelper/SequenceSwitchBlock.attributes.description.customColors=He
 ## Custom Decal
 entities.DzhakeHelper/CustomDecal.placements.name.normal=Custom Decal
 entities.DzhakeHelper/CustomDecal.attributes.description.updateSpriteOnlyIfFlag=(for animated) animation will not play while flag is off
-entities.DzhakeHelper/CustomDecal.attributes.description.removeDecalsFromPath=If not checked, then "decals/" is added to start of path, just because how this entity works
 entities.DzhakeHelper/CustomDecal.attributes.description.texture=Path, starting from <Path root>, without file extension.
 
 ## Void Lift
 entities.DzhakeHelper/VoidLift.placements.name.normal=Void Lift
 entities.DzhakeHelper/VoidLift.attributes.description.sfx=Sfx to play when used, leave empty to not play anything
-
-## Rainbow Hair Badeline Dummy
-entities.DzhakeHelper/RainbowHairBadelineDummy.placements.name.normal=Rainbow Hair Badeline Dummy
+entities.DzhakeHelper/VoidLift.attributes.description.respawnTime=Time before void lift can be activated again. If low, or player's new V speed is too low, void lift can activate twice before the player leaves it, giving huge speed boost.
 
 ## Custom Key
 entities.DzhakeHelper/CustomKey.placements.name.normal=Custom Key
