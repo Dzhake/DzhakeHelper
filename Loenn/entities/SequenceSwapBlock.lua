@@ -4,6 +4,7 @@ local matrixLib = require("utils.matrix")
 local drawableSprite = require("structs.drawable_sprite")
 local connectedEntities = require("helpers.connected_entities")
 local dzhakeHelper = require("mods").requireFromPlugin("libraries.dzhake_helper")
+local logging = require("logging")
 
 
 local sequenceBlock = {}
@@ -15,7 +16,7 @@ sequenceBlock.nodeLimits = {1, 1}
 sequenceBlock.fieldInformation = dzhakeHelper.getSequenceBlockFieldInfo()
 sequenceBlock.placements = {}
 
-for i, _ in ipairs(dzhakeHelper.colors do
+for i, _ in ipairs(dzhakeHelper.colors) do
     sequenceBlock.placements[i] = {
         name = string.format("sequence_block_%s", i - 1),
         data = dzhakeHelper.getSequenceBlockData(i),
@@ -33,6 +34,8 @@ for i, _ in ipairs(dzhakeHelper.colors do
     }
     
     for k,v in pairs(data) do sequenceBlock.placements[i].data[k] = v end
+    
+    logging.warning(data)
 end
 
 function sequenceBlock.sprite(room, entity)
@@ -41,13 +44,16 @@ function sequenceBlock.sprite(room, entity)
     if entity.noReturn then
         local cross = drawableSprite.fromTexture(entity.crossImagePath .. "x", entity)
         cross:addPosition(math.floor(entity.width / 2), math.floor(entity.height / 2))
+        
+        local color = dzhakeHelper.colors[index + 1] or dzhakeHelper.colors[1]
+        if entity.useCustomColor then color = entity.color end
         cross:setColor(color)
         cross.depth = -11
 
         table.insert(sprites, cross)
     end
 
-    dzhakeHelper.addTrailSprites(sprites, entity.x, entity.y, nodeX, nodeY, width, height, entity.pathImagePath, color, 9000)
+    dzhakeHelper.addTrailSprites(sprites, entity, entity.nodes[1].x or entity.x, entity.nodes[1].y or entity.y, entity.pathImagePath)
 
     return sprites
 end

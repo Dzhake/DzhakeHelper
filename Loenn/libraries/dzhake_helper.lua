@@ -13,12 +13,12 @@ function dzhakeHelper.getTrailSprites(x, y, nodeX, nodeY, width, height, trailTe
     local sprites = {}
 
     local drawWidth, drawHeight = math.abs(x - nodeX) + width, math.abs(y - nodeY) + height
-    x, y = math.min(x, nodeX), math.min(y, nodeY)
+    --x, y = math.min(x, nodeX), math.min(y, nodeY)
 
     local frameNinePatch = drawableNinePatch.fromTexture(trailTexture, trailNinePatchOptions, x, y, drawWidth, drawHeight)
     local frameSprites = frameNinePatch:getDrawableSprite()
 
-    local depth = trailDepth or 8999
+    local depth = trailDepth or 9000
     local color = trailColor or {1, 1, 1, 1}
     for _, sprite in ipairs(frameSprites) do
         sprite.depth = depth
@@ -30,8 +30,14 @@ function dzhakeHelper.getTrailSprites(x, y, nodeX, nodeY, width, height, trailTe
     return sprites
 end
 
-function dzhakeHelper.addTrailSprites(sprites, x, y, nodeX, nodeY, width, height, trailTexture, trailColor, trailDepth)
-    for _, sprite in ipairs(dzhakeHelper.getTrailSprites(x, y, nodeX, nodeY, width, height, trailTexture, trailColor, trailDepth)) do
+function dzhakeHelper.addTrailSprites(sprites, entity, nodeX, nodeY, trailTexture)
+    local width, height = entity.width or 32, entity.height or 32
+    local trailColor = dzhakeHelper.colors[entity.index + 1] or dzhakeHelper.colors[1]
+    if entity.useCustomColor then trailColor = entity.color end
+    local trailDepth = 9000
+        
+        
+    for _, sprite in ipairs(dzhakeHelper.getTrailSprites(entity.x, entity.y, nodeX, nodeY, width, height, trailTexture, trailColor, trailDepth)) do
         table.insert(sprites, sprite)
     end
 end

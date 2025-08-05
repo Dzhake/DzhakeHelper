@@ -1,7 +1,6 @@
 local drawableLine = require("structs.drawable_line")
 local drawableSprite = require("structs.drawable_sprite")
 local utils = require("utils")
-local logging = require("logging")
 local connectedEntities = require("helpers.connected_entities")
 local dzhakeHelper = require("mods").requireFromPlugin("libraries.dzhake_helper")
 
@@ -21,7 +20,7 @@ sequenceZipMover.nodeVisibility = "never"
 sequenceZipMover.fieldInformation = dzhakeHelper.getSequenceBlockFieldInfo()
 
 sequenceZipMover.placements = {}
-for i, _ in ipairs(dzhakeHelper.colors do
+for i, _ in ipairs(dzhakeHelper.colors) do
     sequenceZipMover.placements[i] = {
         name = string.format("sequence_zipMover_%s", i - 1),
         data = dzhakeHelper.getSequenceBlockData(i),
@@ -42,10 +41,11 @@ function sequenceZipMover.sprite(room, entity)
     
     local i = entity.index or 0
     local x, y = entity.x or 0, entity.y or 0
+    local width, height = entity.width or 32, entity.height or 32
     local halfWidth, halfHeight = math.floor(width / 2), math.floor(height / 2)
     local centerX, centerY = x + halfWidth, y + halfHeight
 
-    local ropeColor = colors[i + 1]
+    local ropeColor = dzhakeHelper.colors[i + 1]
 
     local nodes = entity.nodes or {{x = 0, y = 0}}
 
