@@ -1,5 +1,5 @@
 - Name: DzhakeHelper
-  Version: 1.4.15
+  Version: 1.4.16
   DLL: bin/DzhakeHelper.dll
   Dependencies:
     - Name: Everest
