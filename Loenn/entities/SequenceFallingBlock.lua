@@ -1,8 +1,3 @@
-local fakeTilesHelper = require("helpers.fake_tiles")
-local utils = require("utils")
-local matrixLib = require("utils.matrix")
-local drawableSprite = require("structs.drawable_sprite")
-local connectedEntities = require("helpers.connected_entities")
 local dzhakeHelper = require("mods").requireFromPlugin("libraries.dzhake_helper")
 
 

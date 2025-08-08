@@ -1,7 +1,6 @@
 local drawableLine = require("structs.drawable_line")
 local drawableSprite = require("structs.drawable_sprite")
 local utils = require("utils")
-local connectedEntities = require("helpers.connected_entities")
 local dzhakeHelper = require("mods").requireFromPlugin("libraries.dzhake_helper")
 
 local sequenceZipMover = {}

@@ -14,10 +14,7 @@ namespace Celeste.Mod.DzhakeHelper.Entities
         {
             public override void Render()
             {
-                if (block.BackgroundBlock)
-                {
-                    Draw.Rect(block.X, block.Y + block.Height - 8f, block.Width, 8 + block.blockHeight, color);
-                }
+                if (block.BackgroundBlock) Draw.Rect(block.X, block.Y + block.Height - 8f, block.Width, 8 + block.blockHeight, color);
             }
         }
 
@@ -81,7 +78,7 @@ namespace Celeste.Mod.DzhakeHelper.Entities
             Collidable = false;
             ID = id;
             Index = data.Int("index");
-            BlendIndexEqualsColorIndex = data.Bool("blendIndexEqualsColorIndex");
+            BlendIndexEqualsColorIndex = data.Bool("blendIndexEqualsColorIndex", true);
             BlendIndex = BlendIndexEqualsColorIndex ? Index : data.Int("blendIndex");
             
             BlockedByPlayer = data.Bool("blockedByPlayer");
@@ -91,11 +88,8 @@ namespace Celeste.Mod.DzhakeHelper.Entities
             //BlockedByHoldables = data.Bool("blockedByHoldables");
             UseCustomColor = data.Bool("useCustomColor");
             if (UseCustomColor)
-            {
                 color = data.HexColorWithAlpha("color");
-            }
             else
-            {
                 switch (Index)
                 {
                 default:
@@ -111,7 +105,6 @@ namespace Celeste.Mod.DzhakeHelper.Entities
                     color = Calc.HexToColor("49dc88");
                     break;
                 }
-            }
 
             Add(occluder = new LightOcclude());
 
@@ -125,7 +118,6 @@ namespace Celeste.Mod.DzhakeHelper.Entities
             base.Awake(scene);
             scene.Add(side = new BoxSide(this, PressedColor));
             foreach (StaticMover staticMover in staticMovers)
-            {
                 switch (staticMover.Entity)
                 {
                 case Spikes spikes:
@@ -139,7 +131,6 @@ namespace Celeste.Mod.DzhakeHelper.Entities
                     spring.VisibleWhenDisabled = true;
                     break;
                 }
-            }
 
             if (group == null)
             {
@@ -149,35 +140,20 @@ namespace Celeste.Mod.DzhakeHelper.Entities
                     this
                 };
                 FindInGroup(this);
-                float num = float.MaxValue;
-                float num2 = float.MinValue;
-                float num3 = float.MaxValue;
-                float num4 = float.MinValue;
+                float minX = float.MaxValue;
+                float maxX = float.MinValue;
+                float minY = float.MaxValue;
+                float maxY = float.MinValue;
                 foreach (SequenceBlock item in group)
                 {
-                    if (item.Left < num)
-                    {
-                        num = item.Left;
-                    }
-
-                    if (item.Right > num2)
-                    {
-                        num2 = item.Right;
-                    }
-
-                    if (item.Bottom > num4)
-                    {
-                        num4 = item.Bottom;
-                    }
-
-                    if (item.Top < num3)
-                    {
-                        num3 = item.Top;
-                    }
+                    if (item.Left < minX) minX = item.Left;
+                    if (item.Right > maxX) maxX = item.Right;
+                    if (item.Bottom > maxY) maxY = item.Bottom;
+                    if (item.Top < minY) minY = item.Top;
                 }
 
-                groupOrigin = new Vector2((int)(num + (num2 - num) / 2f), (int)num4);
-                wigglerScaler = new Vector2(Calc.ClampedMap(num2 - num, 32f, 96f, 1f, 0.2f), Calc.ClampedMap(num4 - num3, 32f, 96f, 1f, 0.2f));
+                groupOrigin = new Vector2((int)(minX + (maxX - minX) / 2f), (int)maxY);
+                wigglerScaler = new Vector2(Calc.ClampedMap(maxX - minX, 32f, 96f, 1f, 0.2f), Calc.ClampedMap(maxY - minY, 32f, 96f, 1f, 0.2f));
                 Add(wiggler = Wiggler.Create(0.3f, 3f));
                 foreach (SequenceBlock item2 in group)
                 {
@@ -188,60 +164,56 @@ namespace Celeste.Mod.DzhakeHelper.Entities
             }
 
             foreach (StaticMover staticMover2 in staticMovers)
-            {
                 if (staticMover2.Entity is Spikes spikes2)
-                {
                     spikes2.SetOrigins(groupOrigin);
-                }
-            }
 
-            for (float num5 = base.Left; num5 < base.Right; num5 += 8f)
+            for (float tileX = base.Left; tileX < base.Right; tileX += 8f)
             {
-                for (float num6 = base.Top; num6 < base.Bottom; num6 += 8f)
+                for (float tileY = base.Top; tileY < base.Bottom; tileY += 8f)
                 {
-                    bool flag = CheckForSame(num5 - 8f, num6);
-                    bool flag2 = CheckForSame(num5 + 8f, num6);
-                    bool flag3 = CheckForSame(num5, num6 - 8f);
-                    bool flag4 = CheckForSame(num5, num6 + 8f);
-                    switch (flag)
+                    bool leftCollide = CheckForSame(tileX - 8f, tileY);
+                    bool rightCollide = CheckForSame(tileX + 8f, tileY);
+                    bool topCollide = CheckForSame(tileX, tileY - 8f);
+                    bool bottomCollide = CheckForSame(tileX, tileY + 8f);
+                    switch (leftCollide)
                     {
-                    case true when flag2 && flag3 && flag4:
+                    case true when (rightCollide && topCollide && bottomCollide):
                     {
-                        if (!CheckForSame(num5 + 8f, num6 - 8f))
-                            SetImage(num5, num6, 3, 0);
-                        else if (!CheckForSame(num5 - 8f, num6 - 8f))
-                            SetImage(num5, num6, 3, 1);
-                        else if (!CheckForSame(num5 + 8f, num6 + 8f))
-                            SetImage(num5, num6, 3, 2);
-                        else if (!CheckForSame(num5 - 8f, num6 + 8f))
-                            SetImage(num5, num6, 3, 3);
+                        if (!CheckForSame(tileX + 8f, tileY - 8f))
+                            SetImage(tileX, tileY, 3, 0);
+                        else if (!CheckForSame(tileX - 8f, tileY - 8f))
+                            SetImage(tileX, tileY, 3, 1);
+                        else if (!CheckForSame(tileX + 8f, tileY + 8f))
+                            SetImage(tileX, tileY, 3, 2);
+                        else if (!CheckForSame(tileX - 8f, tileY + 8f))
+                            SetImage(tileX, tileY, 3, 3);
                         else
-                            SetImage(num5, num6, 1, 1);
+                            SetImage(tileX, tileY, 1, 1);
                         break;
                     }
-                    case true when flag2 && !flag3 && flag4:
-                        SetImage(num5, num6, 1, 0);
+                    case true when (rightCollide && !topCollide && bottomCollide):
+                        SetImage(tileX, tileY, 1, 0);
                         break;
-                    case true when flag2 && flag3 && !flag4:
-                        SetImage(num5, num6, 1, 2);
+                    case true when (rightCollide && topCollide && !bottomCollide):
+                        SetImage(tileX, tileY, 1, 2);
                         break;
-                    case true when !flag2 && flag3 && flag4:
-                        SetImage(num5, num6, 2, 1);
+                    case true when (!rightCollide && topCollide && bottomCollide):
+                        SetImage(tileX, tileY, 2, 1);
                         break;
-                    case false when flag2 && flag3 && flag4:
-                        SetImage(num5, num6, 0, 1);
+                    case false when (rightCollide && topCollide && bottomCollide):
+                        SetImage(tileX, tileY, 0, 1);
                         break;
-                    case true when !flag2 && !flag3 && flag4:
-                        SetImage(num5, num6, 2, 0);
+                    case true when (!rightCollide && !topCollide && bottomCollide):
+                        SetImage(tileX, tileY, 2, 0);
                         break;
-                    case false when flag2 && !flag3 && flag4:
-                        SetImage(num5, num6, 0, 0);
+                    case false when (rightCollide && !topCollide && bottomCollide):
+                        SetImage(tileX, tileY, 0, 0);
                         break;
-                    case true when !flag2 && flag3 && !flag4:
-                        SetImage(num5, num6, 2, 2);
+                    case true when (!rightCollide && topCollide && !bottomCollide):
+                        SetImage(tileX, tileY, 2, 2);
                         break;
-                    case false when flag2 && flag3 && !flag4:
-                        SetImage(num5, num6, 0, 2);
+                    case false when (rightCollide && topCollide && !bottomCollide):
+                        SetImage(tileX, tileY, 0, 2);
                         break;
                     }
                 }
@@ -258,16 +230,17 @@ namespace Celeste.Mod.DzhakeHelper.Entities
             foreach (SequenceBlock entity in Scene.Tracker.GetEntities<SequenceBlock>())
             {
                 if (entity == this || entity == block || entity.BlendIndex != BlendIndex || (!entity.CollideRect(new Rectangle((int)block.X - 1, (int)block.Y, (int)block.Width + 2, (int)block.Height)) && !entity.CollideRect(new Rectangle((int)block.X, (int)block.Y - 1, (int)block.Width, (int)block.Height + 2))) || group.Contains(entity)) continue;
+                
                 group.Add(entity);
-                FindInGroup(entity);
                 entity.group = group;
+                FindInGroup(entity);
             }
         }
 
         private bool CheckForSame(float x, float y)
         {
             foreach (SequenceBlock entity in Scene.Tracker.GetEntities<SequenceBlock>())
-                if (entity.Index == Index && entity.Collider.Collide(new Rectangle((int)x, (int)y, 8, 8)))
+                if (entity.BlendIndex == BlendIndex && entity.Collider.Collide(new Rectangle((int)x, (int)y, 8, 8)))
                     return true;
 
             return false;
@@ -352,36 +325,21 @@ namespace Celeste.Mod.DzhakeHelper.Entities
                 else Depth = -10;
             }
 
-            foreach (StaticMover staticMover in staticMovers)
-            {
-                staticMover.Entity.Depth = Depth + 1;
-            }
+            foreach (StaticMover staticMover in staticMovers) staticMover.Entity.Depth = Depth + 1;
 
             side.Depth = Depth + 5;
             side.Visible = blockHeight > 0;
             occluder.Visible = Collidable;
-            foreach (Image item in solid)
-            {
-                item.Visible = Collidable;
-            }
+            foreach (Image item in solid) item.Visible = Collidable;
 
-            foreach (Image item2 in pressed)
-            {
-                item2.Visible = !Collidable;
-            }
+            foreach (Image item2 in pressed) item2.Visible = !Collidable;
 
-            if (!groupLeader)
-            {
-                return;
-            }
+            if (!groupLeader) return;
 
             Vector2 scale = new Vector2(1f + wiggler.Value * 0.05f * wigglerScaler.X, 1f + wiggler.Value * 0.15f * wigglerScaler.Y);
             foreach (SequenceBlock item3 in group)
             {
-                foreach (Image item4 in item3.all)
-                {
-                    item4.Scale = scale;
-                }
+                foreach (Image item4 in item3.all) item4.Scale = scale;
 
                 foreach (StaticMover staticMover2 in item3.staticMovers)
                 {
@@ -403,24 +361,18 @@ namespace Celeste.Mod.DzhakeHelper.Entities
         private bool TryActorWiggleUp(Entity actor)
         {
             foreach (SequenceBlock item in group)
-            {
                 if (item != this && item.CollideCheck(actor, item.Position + Vector2.UnitY * 4f))
-                {
                     return false;
-                }
-            }
 
             bool collidable = Collidable;
             Collidable = true;
             for (int i = 1; i <= 4; i++)
-            {
                 if (!actor.CollideCheck<Solid>(actor.Position - Vector2.UnitY * i))
                 {
                     actor.Position -= Vector2.UnitY * i;
                     Collidable = collidable;
                     return true;
                 }
-            }
 
             Collidable = collidable;
             return false;

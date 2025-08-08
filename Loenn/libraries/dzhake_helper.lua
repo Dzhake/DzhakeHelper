@@ -1,9 +1,8 @@
-local drawableLine = require("structs.drawable_line")
-local drawableRectangle = require("structs.drawable_rectangle")
 local drawableSprite = require("structs.drawable_sprite")
 local drawableNinePatch = require("structs.drawable_nine_patch")
 local utils = require("utils")
 local connectedEntities = require("helpers.connected_entities")
+local logging = require("logging")
 
 local dzhakeHelper = {}
 
@@ -13,7 +12,7 @@ function dzhakeHelper.getTrailSprites(x, y, nodeX, nodeY, width, height, trailTe
     local sprites = {}
 
     local drawWidth, drawHeight = math.abs(x - nodeX) + width, math.abs(y - nodeY) + height
-    --x, y = math.min(x, nodeX), math.min(y, nodeY)
+    x, y = math.min(x, nodeX), math.min(y, nodeY)
 
     local frameNinePatch = drawableNinePatch.fromTexture(trailTexture, trailNinePatchOptions, x, y, drawWidth, drawHeight)
     local frameSprites = frameNinePatch:getDrawableSprite()
@@ -111,10 +110,23 @@ function dzhakeHelper.getTileSprite(entity, x, y, frame, color, depth, rectangle
     end
 end
 
+function dzhakeHelper.stringStarts(String, Start)
+    return string.sub(String, 1, string.len(Start)) == Start
+end
 
 function dzhakeHelper.getSequenceBlocksSearchPredicate(entity)
-    return function(target)
-        return entity.blendIndex == target.blendIndex
+    local entityBlendIndex = entity.blendIndex or 0
+    if entity.blendIndexEqualsColorIndex then
+        entityBlendIndex = entity.index or 0
+    end
+    
+    return function(target) 
+        if not target or not (target.index and target.width and target.height and dzhakeHelper.stringStarts(target._name, "DzhakeHelper")) then return false end
+        local targetBlendIndex = target.blendIndex
+        if not targetBlendIndex or target.blendIndexEqualsColorIndex then
+            targetBlendIndex = target.index or 0
+        end
+        return entityBlendIndex == targetBlendIndex
     end
 end
 
