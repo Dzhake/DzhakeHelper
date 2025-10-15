@@ -21,6 +21,8 @@ entities.DzhakeHelper/SequenceBlock.attributes.description.blockedByTheo=If chec
 entities.DzhakeHelper/SequenceBlock.attributes.description.backgroundBlock=If checked then block will have static dark background (like cassette blocks), on by default.
 entities.DzhakeHelper/SequenceBlock.attributes.description.blendIndex=Sequence blocks with same "Blend Index" merge together. If "Blend Index Equals Color Index" this value is ignored.
 entities.DzhakeHelper/SequenceBlock.attributes.description.blendIndexEqualsColorIndex=If checked, "Blend Index" is set to same value as "Index" (0-3).
+entities.DzhakeHelper/SequenceBlock.attributes.description.pressedDepth=Visual/update depth of the block in "pressed" (inactive) state.
+entities.DzhakeHelper/SequenceBlock.attributes.description.solidDepth=Visual/update depth of the block in "solid" (active) state.
 
 ## Sequence Zip Mover
 entities.DzhakeHelper/SequenceZipMover.placements.name.sequence_zipMover_0=Sequence Zip Mover (0 - Blue)
@@ -32,6 +34,8 @@ entities.DzhakeHelper/SequenceZipMover.attributes.description.blockedByTheo=If c
 entities.DzhakeHelper/SequenceZipMover.attributes.description.backgroundBlock=If checked then block will have static dark background (like cassette blocks), on by default.
 entities.DzhakeHelper/SequenceZipMover.attributes.description.blendIndex=Sequence blocks with same "Blend Index" merge together. If "Blend Index Equals Color Index" this value is ignored.
 entities.DzhakeHelper/SequenceZipMover.attributes.description.blendIndexEqualsColorIndex=If checked, "Blend Index" is set to same value as "Index" (0-3).
+entities.DzhakeHelper/SequenceZipMover.attributes.description.pressedDepth=Visual/update depth of the block in "pressed" (inactive) state.
+entities.DzhakeHelper/SequenceZipMover.attributes.description.solidDepth=Visual/update depth of the block in "solid" (active) state.
 
 ## Sequence Falling Block
 entities.DzhakeHelper/SequenceFallingBlock.placements.name.sequence_block_0=Sequence Falling Block (0 - Blue)
@@ -43,6 +47,8 @@ entities.DzhakeHelper/SequenceFallingBlock.attributes.description.blockedByTheo=
 entities.DzhakeHelper/SequenceFallingBlock.attributes.description.backgroundBlock=If checked then block will have static dark background (like cassette blocks), on by default.
 entities.DzhakeHelper/SequenceFallingBlock.attributes.description.blendIndex=Sequence blocks with same "Blend Index" merge together. If "Blend Index Equals Color Index" this value is ignored.
 entities.DzhakeHelper/SequenceFallingBlock.attributes.description.blendIndexEqualsColorIndex=If checked, "Blend Index" is set to same value as "Index" (0-3).
+entities.DzhakeHelper/SequenceFallingBlock.attributes.description.pressedDepth=Visual/update depth of the block in "pressed" (inactive) state.
+entities.DzhakeHelper/SequenceFallingBlock.attributes.description.solidDepth=Visual/update depth of the block in "solid" (active) state.
 
 ## Sequence Swap Block
 entities.DzhakeHelper/SequenceSwapBlock.placements.name.sequence_block_0=Sequence Swap Block (0 - Blue)
@@ -54,6 +60,8 @@ entities.DzhakeHelper/SequenceSwapBlock.attributes.description.blockedByTheo=If 
 entities.DzhakeHelper/SequenceSwapBlock.attributes.description.backgroundBlock=If checked then block will have static dark background (like cassette blocks), on by default.
 entities.DzhakeHelper/SequenceSwapBlock.attributes.description.blendIndex=Sequence blocks with same "Blend Index" merge together. If "Blend Index Equals Color Index" this value is ignored.
 entities.DzhakeHelper/SequenceSwapBlock.attributes.description.blendIndexEqualsColorIndex=If checked, "Blend Index" is set to same value as "Index" (0-3).
+entities.DzhakeHelper/SequenceSwapBlock.attributes.description.pressedDepth=Visual/update depth of the block in "pressed" (inactive) state.
+entities.DzhakeHelper/SequenceSwapBlock.attributes.description.solidDepth=Visual/update depth of the block in "solid" (active) state.
 
 ## Sequence Block Manager
 entities.DzhakeHelper/SequenceBlockManager.placements.name.normal=Sequence Block Controller

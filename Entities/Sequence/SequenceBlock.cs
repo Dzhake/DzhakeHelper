@@ -69,6 +69,8 @@ namespace Celeste.Mod.DzhakeHelper.Entities
         public bool BackgroundBlock;
 
         protected Vector2 blockOffset => Vector2.UnitY * (2 - blockHeight);
+        public int SolidDepth;
+        public int PressedDepth;
 
 
         public SequenceBlock(EntityData data, Vector2 offset, EntityID id)
@@ -80,6 +82,8 @@ namespace Celeste.Mod.DzhakeHelper.Entities
             Index = data.Int("index");
             BlendIndexEqualsColorIndex = data.Bool("blendIndexEqualsColorIndex", true);
             BlendIndex = BlendIndexEqualsColorIndex ? Index : data.Int("blendIndex");
+            PressedDepth = data.Int("pressedDepth", 8990);
+            SolidDepth = data.Int("solidDepth", -10);
             
             BlockedByPlayer = data.Bool("blockedByPlayer");
             ImagePath = data.Attr("imagePath", "objects/DzhakeHelper/sequenceBlock/");
@@ -317,12 +321,12 @@ namespace Celeste.Mod.DzhakeHelper.Entities
 
         private void UpdateVisualState()
         {
-            if (!Collidable) Depth = 8990;
+            if (!Collidable) Depth = PressedDepth;
             else
             {
-                Player entity = Scene.Tracker.GetEntity<Player>();
-                if (entity != null && entity.Top >= Bottom - 1f) Depth = 10;
-                else Depth = -10;
+                Player entity = Scene.Tracker.GetEntity<Player>(); //oh my god what I might need to change this one day.
+                if (entity != null && entity.Top >= Bottom - 1f) Depth = SolidDepth + 20;
+                else Depth = SolidDepth;
             }
 
             foreach (StaticMover staticMover in staticMovers) staticMover.Entity.Depth = Depth + 1;

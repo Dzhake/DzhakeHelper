@@ -2,7 +2,6 @@ local drawableSprite = require("structs.drawable_sprite")
 local drawableNinePatch = require("structs.drawable_nine_patch")
 local utils = require("utils")
 local connectedEntities = require("helpers.connected_entities")
-local logging = require("logging")
 
 local dzhakeHelper = {}
 
@@ -158,6 +157,8 @@ function dzhakeHelper.getSequenceBlockData(i)
         color = "ffffff",
         imagePath = "objects/DzhakeHelper/sequenceBlock/",
         backgroundBlock = true,
+        solidDepth = 8990,
+        pressedDepth = -10,
     }
 end
 
