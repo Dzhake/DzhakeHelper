@@ -49,6 +49,9 @@ for _, direction in ipairs(moveBlockDirections) do
                 breakingFillColor = "cc2541",
                 bottomButton = false,
                 dontBreak = false,
+                flag = "",
+                activateOnlyIfFlag = false,
+                autoActivateIfFlag = false,
             }
         })
     end

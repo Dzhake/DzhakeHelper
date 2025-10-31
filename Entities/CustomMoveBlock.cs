@@ -288,9 +288,13 @@ public class CustomMoveBlock : Solid
 
     public string Texture;
 
+    public string Flag;
+    public bool ActivateOnlyIfFlag;
+    public bool AutoActivateIfFlag;
+
      
     public CustomMoveBlock(Vector2 position, int width, int height, Directions direction, bool canSteer, string texture, float acceleration, float moveSpeed, float crashTime, float crashResetTime, float regenTime,
-        Color idleBgFill, Color pressedBgFill, Color breakingBgFill, bool bottomButton, bool dontBreak)
+        Color idleBgFill, Color pressedBgFill, Color breakingBgFill, bool bottomButton, bool dontBreak, string flag = "", bool activateOnlyIfFlag = false, bool autoActivateIfFlag = false)
         : base(position, width, height, safe: false)
     {
         this.dontBreak = dontBreak;
@@ -307,6 +311,9 @@ public class CustomMoveBlock : Solid
         CrashTime = crashTime;
         CrashResetTime = crashResetTime;
         RegenTime = regenTime;
+        Flag = flag;
+        ActivateOnlyIfFlag = activateOnlyIfFlag;
+        AutoActivateIfFlag = autoActivateIfFlag;
 
         base.Depth = -1;
         startPosition = position;
@@ -396,7 +403,7 @@ public class CustomMoveBlock : Solid
             data.Float("regenTime",3f), data.HexColorWithAlpha("idleFillColor", Calc.HexToColor("474070")),
             data.HexColorWithAlpha("pressedFillColor", Calc.HexToColor("30b335")),
             data.HexColorWithAlpha("breakingFillColor", Calc.HexToColor("cc2541")),
-              data.Bool("bottomButton"), data.Bool("dontBreak"))
+              data.Bool("bottomButton"), data.Bool("dontBreak"), data.Attr("flag"), data.Bool("activateOnlyIfFlag"), data.Bool("autoActivateIfFlag"))
     {
     }
 
@@ -413,10 +420,8 @@ public class CustomMoveBlock : Solid
         {
             triggered = false;
             state = MovementState.Idling;
-            while (!triggered && !HasPlayerRider())
-            {
+            while ((ActivateOnlyIfFlag && !Util.ParseFlags(Scene as Level, Flag)) || (!triggered && !HasPlayerRider() && !(AutoActivateIfFlag && Util.ParseFlags(Scene as Level, Flag))))
                 yield return null;
-            }
 
             Audio.Play("event:/game/04_cliffside/arrowblock_activate", Position);
             state = MovementState.Moving;
@@ -466,7 +471,7 @@ public class CustomMoveBlock : Solid
                     MoveParticles();
                 }
 
-                speed = Calc.Approach(speed, targetSpeed, 300f * Engine.DeltaTime);
+                speed = Calc.Approach(speed, targetSpeed, Accel * Engine.DeltaTime);
                 angle = Calc.Approach(angle, targetAngle, MathF.PI * 16f * Engine.DeltaTime);
                 Vector2 vector = Calc.AngleToVector(angle, speed);
                 Vector2 vec = vector * Engine.DeltaTime;

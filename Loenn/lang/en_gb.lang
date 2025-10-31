@@ -87,6 +87,12 @@ entities.DzhakeHelper/CustomMoveBlock.placements.name.left_steer=Custom Move Blo
 entities.DzhakeHelper/CustomMoveBlock.placements.name.left_nosteer=Custom Move Block (Left)
 entities.DzhakeHelper/CustomMoveBlock.attributes.description.canSteer=Determines whether the move block can be moved by the player.
 entities.DzhakeHelper/CustomMoveBlock.attributes.description.direction=Determines the direction the move block moves in upon activation.
+entities.DzhakeHelper/CustomMoveBlock.attributes.description.flag=List of 0+ flags separated by commas, possibly prefixed with ! to invert flag. Does nothing on it's own, but affects other options (Activate Only If Flag, Auto Activate If Flag)
+entities.DzhakeHelper/CustomMoveBlock.attributes.description.activateOnlyIfFlag=Move block won't trigger at all if this is checked and flag is false.
+entities.DzhakeHelper/CustomMoveBlock.attributes.description.autoActivateIfFlag=Move block will start moving as soon as possible, without player, if flag is true.
+entities.DzhakeHelper/CustomMoveBlock.attributes.description.acceleration=Block's acceleration after it starts moving
+entities.DzhakeHelper/CustomMoveBlock.attributes.description.moveSpeed=Max/Target speed of the block.
+
 
 ## Sequence Berry
 entities.DzhakeHelper/SequenceBerry.placements.name.normal=Sequence Berry
