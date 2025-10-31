@@ -299,23 +299,25 @@ public static class Util
 
 
     // https://github.com/Viv-0/VivHelper/blob/master/_Code/Module%2C%20Extensions%2C%20Etc/VivHelperModule.cs#L907
-    public static bool ParseFlags(Level l, string[] flags, string and_or = "and")
+    public static bool ParseFlags(Level? l, string[]? flags, AndOr and_or = AndOr.And)
     {
         if (l == null)
             return false;
-        bool b = and_or == "and";
         if (flags == null || flags.Length == 0 || (flags.Length == 1 && flags[0] == ""))
             return true;
+        bool b = and_or == AndOr.And;
         foreach (string flag in flags)
         {
-            if (and_or == "or") { b |= flag[0] != '!' ? l.Session.GetFlag(flag) : !l.Session.GetFlag(flag.TrimStart('!')); } else { b &= flag[0] != '!' ? l.Session.GetFlag(flag) : !l.Session.GetFlag(flag.TrimStart('!')); }
+            if (and_or == AndOr.Or) { b |= flag[0] != '!' ? l.Session.GetFlag(flag) : !l.Session.GetFlag(flag.TrimStart('!')); } else { b &= flag[0] != '!' ? l.Session.GetFlag(flag) : !l.Session.GetFlag(flag.TrimStart('!')); }
         }
         return b;
     }
+    
+    public enum AndOr { And, Or}
 
-    public static bool ParseFlags(Level l,string flags, string and_or = "and")
+    public static bool ParseFlags(Level? l,string? flags, AndOr and_or = AndOr.And)
     {
-        return ParseFlags(l, flags.Split(','),and_or);
+        return flags == null || ParseFlags(l, flags.Split(','),and_or);
     }
 
 

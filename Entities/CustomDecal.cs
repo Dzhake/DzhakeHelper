@@ -89,7 +89,7 @@ namespace Celeste.Mod.DzhakeHelper.Entities
         {
             if (UpdateSpriteOnlyIfFlag)
             {
-                if (!FlagIsTrue())
+                if (!Util.ParseFlags(Scene as Level, Flags))
                 {
                     frame -= AnimationSpeed * Engine.DeltaTime;
                     if (frame < 0) frame = textures.Count; 
@@ -100,7 +100,7 @@ namespace Celeste.Mod.DzhakeHelper.Entities
 
         public override void Render()
         {
-            if (FlagIsTrue())
+            if (Util.ParseFlags(Scene as Level, Flags))
             {
                 Vector2 oldPos = Position;
                 if (HD)
@@ -113,11 +113,6 @@ namespace Celeste.Mod.DzhakeHelper.Entities
                 base.Render();
                 Position = oldPos;
             }
-        }
-
-        public bool FlagIsTrue()
-        {
-            return Flags == "" || Util.ParseFlags(base.Scene as Level,Flags);
         }
 
         public static bool IsOldVersion(EntityData data)
