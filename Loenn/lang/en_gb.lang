@@ -122,6 +122,7 @@ entities.DzhakeHelper/CustomKey.attributes.description.bubbleReturn=Requires 2 n
 ## Custom Door
 entities.DzhakeHelper/CustomDoor.placements.name.normal=Custom Door
 entities.DzhakeHelper/CustomKey.attributes.description.openAny=Key can only open door with same group, unless key or door has "open any"/"opened by any" checked.
+entities.DzhakeHelper/CustomKey.attributes.description.sprite=Path to the door's sprite, relative to Gameplay. The entity adds "lockdoorXX" by default, so just set the path to the folder, like this: "objects/MyMod/myLockDoor/", and the game will use "objects/MyMod/myLockDoor/lockdoor00". Alternatively do ".../myLockDoor/green", and the game should use ".../myLockDoor/greenlockdoor00". Thanks for reading.
 
 ## Elephant Walk Controller
 entities.DzhakeHelper/ElephantWalkController.placements.name.normal=Elephant Walk Controller
