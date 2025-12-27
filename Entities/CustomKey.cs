@@ -156,7 +156,9 @@ namespace Celeste.Mod.DzhakeHelper.Entities
             {
                 SpeedMin = 40f,
                 SpeedMax = 60f,
-                SpeedMultiplier = 0.05f
+                SpeedMultiplier = 0.05f,
+                Color = ParticleColor1,
+                Color2 = ParticleColor2,
             };
 
             if (!IsUsed && !Collidable && Util.TryGetPlayer(out Player player) && !player.Leader.Followers.Contains(follower) && !player.Dead)
