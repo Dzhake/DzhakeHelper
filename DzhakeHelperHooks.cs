@@ -146,9 +146,10 @@ namespace Celeste.Mod.DzhakeHelper
         }
 
 
-        // Custom Keys
+        // Custom Keys & Elephant walk
         private static void PlayerSpawn(Player self)
         {
+            ElephantWalkController.Angle = 0;
             if (DzhakeHelperModule.Session?.CurrentKeys == null || self == null) return;
             List<EntityID> existingIDs = new();
             Scene level = self.Scene;
