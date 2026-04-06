@@ -1,7 +1,6 @@
 local utils = require("utils")
 local drawableSprite = require("structs.drawable_sprite")
 local dzhakeHelper = require("mods").requireFromPlugin("libraries.dzhake_helper")
-local logging = require("logging")
 
 
 local sequenceBlock = {}
@@ -31,8 +30,6 @@ for i, _ in ipairs(dzhakeHelper.colors) do
     }
     
     for k,v in pairs(data) do sequenceBlock.placements[i].data[k] = v end
-    
-    logging.warning(data)
 end
 
 function sequenceBlock.sprite(room, entity)
