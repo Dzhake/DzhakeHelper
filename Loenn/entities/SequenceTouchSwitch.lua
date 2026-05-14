@@ -23,7 +23,12 @@ SequenceTouchSwitch.fieldInformation = {
     group = {
         fieldType = "integer",
         minimumValue = 0,
-    }
+    },
+    fieldInformation = {
+        sequenceGroup = {
+            fieldType = "integer",
+        }
+    },
 }
 
 SequenceTouchSwitch.name = "DzhakeHelper/SequenceTouchSwitch"
@@ -37,6 +42,7 @@ SequenceTouchSwitch.placements = {
             group = 1,
             iconTexture = "objects/DzhakeHelper/sequenceTouchSwitch/icons/rhombus/icon",
             groundReset = false,
+            sequenceGroup = 0,
         },
     }
 }

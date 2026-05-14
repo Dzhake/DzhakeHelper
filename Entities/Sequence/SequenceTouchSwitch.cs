@@ -1,7 +1,7 @@
-﻿using System;
-using Celeste.Mod.Entities;
+﻿using Celeste.Mod.Entities;
 using Microsoft.Xna.Framework;
 using Monocle;
+using System;
 
 namespace Celeste.Mod.DzhakeHelper.Entities
 {
@@ -19,6 +19,7 @@ namespace Celeste.Mod.DzhakeHelper.Entities
         private Sprite icon;
 
         public int Group;
+        public int SequenceGroup;
 
         private Color inactiveColor = Calc.HexToColor("5fcde4");
 
@@ -56,7 +57,8 @@ namespace Celeste.Mod.DzhakeHelper.Entities
             Add(bloom = new BloomPoint(0f, 16f));
             bloom.Alpha = 0f;
             Group = data.Int("group");
-            
+            SequenceGroup = data.Int("sequenceGroup");
+
             base.Collider = new Hitbox(16f, 16f, -8f, -8f);
             Add(new HoldableCollider(OnHoldable, new Hitbox(20f, 20f, -10f, -10f)));
             Add(new SeekerCollider(OnSeeker, new Hitbox(24f, 24f, -12f, -12f)));

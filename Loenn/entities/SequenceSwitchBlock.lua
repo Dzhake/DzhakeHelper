@@ -6,6 +6,11 @@ local colorSwitch = {}
 colorSwitch.name = "DzhakeHelper/SequenceSwitchBlock"
 colorSwitch.resizable = {true, true}
 colorSwitch.minimumSize = {16, 16}
+colorSwitch.fieldInformation = {
+    sequenceGroup = {
+        fieldType = "integer",
+    }
+}
 
 colorSwitch.placements = {
     {
@@ -19,9 +24,11 @@ colorSwitch.placements = {
             malachite = true,
             useCustomColors = false,
             customColors = "5c5bda,ff0051,ffd700,49dc88",
-            sprite = "objects/DzhakeHelper/SequenceSwitchBlock/switch",
+            sprite = "objects/DzhakeHelper/sequenceSwitchBlock/switch",
             allowsDashOnTop = false,
-        }
+            sequenceGroup = 0,
+        },
+
     }
 }
 

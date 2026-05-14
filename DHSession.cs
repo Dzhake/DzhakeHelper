@@ -1,12 +1,27 @@
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
 using Celeste.Mod.DzhakeHelper.Entities;
+using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 
-namespace Celeste.Mod.DzhakeHelper {
-    public class DHSession : EverestModuleSession {
+namespace Celeste.Mod.DzhakeHelper
+{
+    public class DHSession : EverestModuleSession
+    {
         //Sequence
         public bool HasSequenceDash { get; set; } = false;
-        public int ActiveSequenceIndex;
+
+        public int ActiveSequenceIndex
+        {
+            get
+            {
+                return ActiveSequenceIndexes.TryGetValue(0, out int index) ? index : 0;
+            }
+            set
+            {
+                ActiveSequenceIndexes[0] = value;
+            }
+        }
+
+        public Dictionary<int, int> ActiveSequenceIndexes = new();
 
         //Lua
         public Dictionary<string, object> StoredVariables = new();

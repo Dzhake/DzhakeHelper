@@ -1,5 +1,5 @@
-﻿using System;
-using Monocle;
+﻿using Monocle;
+using System;
 
 namespace Celeste.Mod.DzhakeHelper.Entities;
 
@@ -21,12 +21,14 @@ public class DzhakeSwitch : Component
     public bool Finished { get; private set; }
 
     public int Group;
+    public int SequenceGroup;
 
     public DzhakeSwitch(EntityData data)
         : base(active: true, visible: false)
     {
         GroundReset = data.Bool("groundReset");
         Group = data.Int("group");
+        SequenceGroup = data.Int("sequenceGroup");
     }
 
     public override void EntityAdded(Scene scene)
@@ -34,7 +36,7 @@ public class DzhakeSwitch : Component
         base.EntityAdded(scene);
     }
 
-    
+
 
     public override void Update()
     {
@@ -50,7 +52,7 @@ public class DzhakeSwitch : Component
     }
 
 
-        public bool Activate()
+    public bool Activate()
     {
         if (!Finished && !Activated)
         {
@@ -98,29 +100,27 @@ public class DzhakeSwitch : Component
         }
     }
 
-    public static bool Check(Scene scene)
-    {
-        return scene.Tracker.GetComponent<DzhakeSwitch>()?.Finished ?? false;
-    }
-
 
     private bool FinishedGroupCheck(Level level)
     {
         foreach (SequenceTouchSwitch entity in level.Tracker.GetEntities<SequenceTouchSwitch>())
         {
-            if (entity.Group == Group && !entity.Switch.Activated)
+            if (entity.Group == Group && entity.SequenceGroup == SequenceGroup && !entity.Switch.Activated)
             {
                 return false;
             }
         }
         foreach (DzhakeSwitch component2 in level.Tracker.GetComponents<DzhakeSwitch>())
         {
-            if (component2.Group == Group)
+            if (component2.Group == Group && component2.SequenceGroup == SequenceGroup)
             {
                 component2.Finish();
             }
         }
-        base.Scene.Tracker.GetEntity<SequenceBlockManager>()?.CycleSequenceBlocks();
+
+        foreach (Entity? managerEnt in Scene.Tracker.GetEntities<SequenceBlockManager>())
+            if (managerEnt is SequenceBlockManager manager && manager.SequenceGroup == SequenceGroup) manager.CycleSequenceBlocks();
+
         return true;
     }
 }

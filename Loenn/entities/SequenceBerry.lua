@@ -69,6 +69,7 @@ strawberry.placements = {
             onlyGrabIfActive = true,
             onlyCollectIfActive = true,
             onlyFlyAwayIfActive = true,
+            sequenceGroup = 0,
         },
     },
     {
@@ -83,6 +84,7 @@ strawberry.placements = {
             onlyGrabIfActive = true,
             onlyCollectIfActive = true,
             onlyFlyAwayIfActive = true,
+            sequenceGroup = 0,
         },
     }
 }

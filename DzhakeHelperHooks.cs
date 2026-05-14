@@ -1,11 +1,9 @@
-﻿using System;
-using Celeste.Mod.DzhakeHelper.Entities;
+﻿using Celeste.Mod.DzhakeHelper.Entities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoMod.Cil;
 using Monocle;
+using MonoMod.Cil;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Celeste.Mod.DzhakeHelper
 {
@@ -22,7 +20,7 @@ namespace Celeste.Mod.DzhakeHelper
             On.Celeste.Player.Update += PlayerUpdate;
             On.Celeste.Player.Render += PlayerRender;
             Everest.Events.Player.OnSpawn += PlayerSpawn;
-            
+
             IL.Celeste.Player.Render += PlayerRender_IL;
         }
 
@@ -44,24 +42,29 @@ namespace Celeste.Mod.DzhakeHelper
         {
             ResetDashSession();
             orig(self);
-        }   
+        }
 
         //Sequence
         private static void CustomDashBegin(On.Celeste.Player.orig_DashBegin orig, Player self)
         {
-            SequenceBlockManager manager = self.Scene.Tracker.GetEntity<SequenceBlockManager>();
-            if (manager != null)
+            bool hasSequenceDash = DzhakeHelperModule.Session.HasSequenceDash;
+            foreach (Entity? managerEnt in self.Scene.Tracker.GetEntities<SequenceBlockManager>())
             {
-                if (DzhakeHelperModule.Session.HasSequenceDash)
+                if (managerEnt is SequenceBlockManager manager)
                 {
-                    DzhakeHelperModule.Session.HasSequenceDash = false;
-                    manager.CycleSequenceBlocks();
-                }
-                if (manager.everyDash)
-                {
-                    manager.CycleSequenceBlocks();
+                    if (DzhakeHelperModule.Session.HasSequenceDash)
+                    {
+                        hasSequenceDash = false;
+                        manager.CycleSequenceBlocks();
+                    }
+                    if (manager.everyDash)
+                    {
+                        manager.CycleSequenceBlocks();
+                    }
                 }
             }
+
+            DzhakeHelperModule.Session.HasSequenceDash = hasSequenceDash;
 
             orig(self);
         }
@@ -99,7 +102,7 @@ namespace Celeste.Mod.DzhakeHelper
             orig(self);
         }
 
-        
+
 
         private static void PlayerRender(On.Celeste.Player.orig_Render orig, Player self)
         {

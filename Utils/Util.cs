@@ -1,11 +1,11 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Celeste.Mod.DzhakeHelper.Entities;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
+using Monocle;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using Monocle;
-using Celeste.Mod.DzhakeHelper.Entities;
-using Microsoft.Xna.Framework.Input;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace Celeste.Mod.DzhakeHelper;
@@ -270,7 +270,7 @@ public static class Util
         Top, TopRight
     }
 
-    public static Dictionary<DirectionEnum,Vector2> Directions = new() {
+    public static Dictionary<DirectionEnum, Vector2> Directions = new() {
         { DirectionEnum.Right, new Vector2(1f, 0f) },
         { DirectionEnum.Left, new Vector2(-1f, 0f) },
         { DirectionEnum.Bottom, new Vector2(0f, 1f) },
@@ -285,16 +285,17 @@ public static class Util
         [Calc.HexToColor("5c5bda"), Calc.HexToColor("ff0051"), Calc.HexToColor("ffd700"), Calc.HexToColor("49dc88")];
 
 
-    public static void CycleSequenceColor(int times = 1)
+    public static void CycleSequenceColor(int times = 1, int sequenceGroup = 0)
     {
-        SequenceBlockManager manager = Engine.Scene.Tracker.GetEntity<SequenceBlockManager>();
-        manager?.CycleSequenceBlocks(times);
+        foreach (Entity? managerEnt in Engine.Scene.Tracker.GetEntities<SequenceBlockManager>())
+            if (managerEnt is SequenceBlockManager manager && manager.SequenceGroup == sequenceGroup)
+                manager.CycleSequenceBlocks(times);
     }
 
-    public static void SetSequenceColor(int index)
+    public static void SetSequenceColor(int index, int sequenceGroup)
     {
-        SequenceBlockManager manager = Engine.Scene.Tracker.GetEntity<SequenceBlockManager>();
-        manager?.SetSequenceBlocks(index);
+        foreach (Entity? managerEnt in Engine.Scene.Tracker.GetEntities<SequenceBlockManager>())
+            if (managerEnt is SequenceBlockManager manager && manager.SequenceGroup == sequenceGroup) manager.SetSequenceBlocks(index);
     }
 
 
@@ -312,21 +313,21 @@ public static class Util
         }
         return b;
     }
-    
-    public enum AndOr { And, Or}
 
-    public static bool ParseFlags(Level? l,string? flags, AndOr and_or = AndOr.And)
+    public enum AndOr { And, Or }
+
+    public static bool ParseFlags(Level? l, string? flags, AndOr and_or = AndOr.And)
     {
-        return flags == null || ParseFlags(l, flags.Split(','),and_or);
+        return flags == null || ParseFlags(l, flags.Split(','), and_or);
     }
 
 
-    public static EntityData GenerateEntityData(Dictionary<string,object> data)
+    public static EntityData GenerateEntityData(Dictionary<string, object> data)
     {
         EntityData entityData = new EntityData();
 
         if (data["_x"] != null) entityData.Position.X = (float)data["_x"];
-        if (data["_y"] != null)  entityData.Position.Y = (float)data["_y"];
+        if (data["_y"] != null) entityData.Position.Y = (float)data["_y"];
 
         if (data["_name"] != null) entityData.Name = (string)data["_name"];
         if (data["_width"] != null) entityData.Width = (int)data["_width"];
@@ -346,7 +347,7 @@ public static class Util
 
         entityData.Level = Util.GetLevel().Session.LevelData;
 
-        foreach (KeyValuePair<string,object> kvp in data)
+        foreach (KeyValuePair<string, object> kvp in data)
         {
             if (kvp.Key is "_x" or "_y" or "_id" or "_name" or "_nodes" or "_width" or "_height") continue;
             entityData.Values[kvp.Key] = kvp.Value;

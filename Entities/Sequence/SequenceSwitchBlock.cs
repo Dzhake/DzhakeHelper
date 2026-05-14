@@ -32,6 +32,7 @@ public class SequenceSwitchBlock : Solid
 
     public bool CustomColors;
     public bool AllowDashOnTop;
+    public int SequenceGroup;
 
     public string sprite;
 
@@ -59,7 +60,7 @@ public class SequenceSwitchBlock : Solid
 
         if (indexes.Count == 0)
         {
-            indexes = [0,1,2,3];
+            indexes = [0, 1, 2, 3];
         }
 
         CustomColors = data.Bool("useCustomColors");
@@ -74,7 +75,7 @@ public class SequenceSwitchBlock : Solid
 
             if (Colors.Count != indexes.Count)
             {
-                Logger.Log(LogLevel.Error, "DzhakeHelper/SequenceSwitchBlock",$"Colors.Count is not same as indexes.Count! Colors is {Colors.Count}, and indexes.Count is {indexes.Count}");
+                Logger.Log(LogLevel.Error, "DzhakeHelper/SequenceSwitchBlock", $"Colors.Count is not same as indexes.Count! Colors is {Colors.Count}, and indexes.Count is {indexes.Count}");
             }
         }
         else
@@ -116,6 +117,7 @@ public class SequenceSwitchBlock : Solid
         this.OnDashCollide = Dashed;
 
         AllowDashOnTop = data.Bool("allowsDashOnTop");
+        SequenceGroup = data.Int("sequenceGroup");
     }
 
     public override void Render()
@@ -200,7 +202,17 @@ public class SequenceSwitchBlock : Solid
         if (!SaveData.Instance.Assists.Invincible && player.CollideCheck<Spikes>())
             return DashCollisionResults.NormalCollision;
 
-        if (indexes[nextColorIndex] == DzhakeHelperModule.Session.ActiveSequenceIndex)
+        SequenceBlockManager? manager = null;
+        foreach (Entity? managerEnt in Scene.Tracker.GetEntities<SequenceBlock>())
+        {
+            if (managerEnt is SequenceBlockManager manager2 && manager2.SequenceGroup == SequenceGroup)
+            {
+                manager = manager2;
+                break;
+            }
+        }
+
+        if (indexes[nextColorIndex] == manager?.LocalCurrentIndex)
             return DashCollisionResults.NormalCollision;
 
         if (player.StateMachine.State == Player.StRedDash)
@@ -209,7 +221,7 @@ public class SequenceSwitchBlock : Solid
 
 
         Switch(direction);
-        return  (!AllowDashOnTop || !(direction.Y == 1)) ? DashCollisionResults.Rebound : DashCollisionResults.NormalCollision;
+        return (!AllowDashOnTop || !(direction.Y == 1)) ? DashCollisionResults.Rebound : DashCollisionResults.NormalCollision;
     }
 
     public void Switch(Vector2 direction)
@@ -222,7 +234,7 @@ public class SequenceSwitchBlock : Solid
         if (this.random)
             nextColorIndex = Calc.Random.Next(0, indexes.Count);
 
-        Util.SetSequenceColor(nextColorIndex);
+        Util.SetSequenceColor(nextColorIndex, SequenceGroup);
         Color col = Colors[nextColorIndex];
 
         SetEdgeColor(defaultEdgeColor, col);
@@ -250,7 +262,17 @@ public class SequenceSwitchBlock : Solid
             if (nextColorIndex > indexes.Count - 1)
                 nextColorIndex = 0;
 
-            if (indexes[nextColorIndex] == DzhakeHelperModule.Session.ActiveSequenceIndex)
+            SequenceBlockManager? manager = null;
+            foreach (Entity? managerEnt in Scene.Tracker.GetEntities<SequenceBlockManager>())
+            {
+                if (managerEnt is SequenceBlockManager manager2 && manager2.SequenceGroup == SequenceGroup)
+                {
+                    manager = manager2;
+                    break;
+                }
+            }
+
+            if (indexes[nextColorIndex] == manager?.LocalCurrentIndex)
                 nextColorIndex++;
         }
 

@@ -1,4 +1,6 @@
 # Entities
+
+## Sequence Refill
 entities.DzhakeHelper/SequenceRefill.placements.name.normal=Sequence Refill
 entities.DzhakeHelper/SequenceRefill.attributes.description.oneUse=If checked then refill is destroyed after use.
 entities.DzhakeHelper/SequenceRefill.attributes.description.twoDashes=If checked then player gains two dashes after collecting refill
@@ -20,9 +22,11 @@ entities.DzhakeHelper/SequenceBlock.attributes.description.blockedByPlayer=If ch
 entities.DzhakeHelper/SequenceBlock.attributes.description.blockedByTheo=If checked then block will not appear if there is a theo crystal in front of it.
 entities.DzhakeHelper/SequenceBlock.attributes.description.backgroundBlock=If checked then block will have static dark background (like cassette blocks), on by default.
 entities.DzhakeHelper/SequenceBlock.attributes.description.blendIndex=Sequence blocks with same "Blend Index" merge together. If "Blend Index Equals Color Index" this value is ignored.
-entities.DzhakeHelper/SequenceBlock.attributes.description.blendIndexEqualsColorIndex=If checked, "Blend Index" is set to same value as "Index" (0-3).
+entities.DzhakeHelper/SequenceBlock.attributes.description.blendIndexEqualsColorIndex=If checked, "Blend Index" is set to "Index + SequenceGroup * 4", where Index is in range [0-3].
+entities.DzhakeHelper/SequenceBlock.attributes.name.blendIndexEqualsColorIndex=Auto blend index
 entities.DzhakeHelper/SequenceBlock.attributes.description.pressedDepth=Visual/update depth of the block in "pressed" (inactive) state.
 entities.DzhakeHelper/SequenceBlock.attributes.description.solidDepth=Visual/update depth of the block in "solid" (active) state.
+entities.DzhakeHelper/SequenceBlock.attributes.description.sequenceGroup=Sequence managers only affect sequence blocks with the same "Sequence Group". Allows to use multiple disconnected sequence managers in one room.
 
 ## Sequence Zip Mover
 entities.DzhakeHelper/SequenceZipMover.placements.name.sequence_zipMover_0=Sequence Zip Mover (0 - Blue)
@@ -36,6 +40,8 @@ entities.DzhakeHelper/SequenceZipMover.attributes.description.blendIndex=Sequenc
 entities.DzhakeHelper/SequenceZipMover.attributes.description.blendIndexEqualsColorIndex=If checked, "Blend Index" is set to same value as "Index" (0-3).
 entities.DzhakeHelper/SequenceZipMover.attributes.description.pressedDepth=Visual/update depth of the block in "pressed" (inactive) state.
 entities.DzhakeHelper/SequenceZipMover.attributes.description.solidDepth=Visual/update depth of the block in "solid" (active) state.
+entities.DzhakeHelper/SequenceZipMover.attributes.description.sequenceGroup=Sequence managers only affect sequence blocks with the same "Sequence Group". Allows to use multiple disconnected sequence managers in one room.
+entities.DzhakeHelper/SequenceZipMover.attributes.name.blendIndexEqualsColorIndex=Auto blend index
 
 ## Sequence Falling Block
 entities.DzhakeHelper/SequenceFallingBlock.placements.name.sequence_block_0=Sequence Falling Block (0 - Blue)
@@ -49,6 +55,8 @@ entities.DzhakeHelper/SequenceFallingBlock.attributes.description.blendIndex=Seq
 entities.DzhakeHelper/SequenceFallingBlock.attributes.description.blendIndexEqualsColorIndex=If checked, "Blend Index" is set to same value as "Index" (0-3).
 entities.DzhakeHelper/SequenceFallingBlock.attributes.description.pressedDepth=Visual/update depth of the block in "pressed" (inactive) state.
 entities.DzhakeHelper/SequenceFallingBlock.attributes.description.solidDepth=Visual/update depth of the block in "solid" (active) state.
+entities.DzhakeHelper/SequenceFallingBlock.attributes.description.sequenceGroup=Sequence managers only affect sequence blocks with the same "Sequence Group". Allows to use multiple disconnected sequence managers in one room.
+entities.DzhakeHelper/SequenceFalingBlock.attributes.name.blendIndexEqualsColorIndex=Auto blend index
 
 ## Sequence Swap Block
 entities.DzhakeHelper/SequenceSwapBlock.placements.name.sequence_block_0=Sequence Swap Block (0 - Blue)
@@ -62,6 +70,8 @@ entities.DzhakeHelper/SequenceSwapBlock.attributes.description.blendIndex=Sequen
 entities.DzhakeHelper/SequenceSwapBlock.attributes.description.blendIndexEqualsColorIndex=If checked, "Blend Index" is set to same value as "Index" (0-3).
 entities.DzhakeHelper/SequenceSwapBlock.attributes.description.pressedDepth=Visual/update depth of the block in "pressed" (inactive) state.
 entities.DzhakeHelper/SequenceSwapBlock.attributes.description.solidDepth=Visual/update depth of the block in "solid" (active) state.
+entities.DzhakeHelper/SequenceSwapBlock.attributes.description.sequenceGroup=Sequence managers only affect sequence blocks with the same "Sequence Group". Allows to use multiple disconnected sequence managers in one room.
+entities.DzhakeHelper/SequenceSwapBlock.attributes.name.blendIndexEqualsColorIndex=Auto blend index
 
 ## Sequence Block Manager
 entities.DzhakeHelper/SequenceBlockManager.placements.name.normal=Sequence Block Controller
@@ -69,12 +79,14 @@ entities.DzhakeHelper/SequenceBlockManager.attributes.description.everyDash=If c
 entities.DzhakeHelper/SequenceBlockManager.attributes.description.flag=Flag which is used for "Cycle When Flag On" and "Cycle When Flag Off".
 entities.DzhakeHelper/SequenceBlockManager.attributes.description.cycleWhenFlagOn=If checked, then blocks cycle when flag is active after being inactive.
 entities.DzhakeHelper/SequenceBlockManager.attributes.description.cycleWhenFlagOff=If checked, then blocks cycle when flag is inactive after being active.
+entities.DzhakeHelper/SequenceBlockManager.attributes.description.sequenceGroup=Sequence managers only affect sequence blocks with the same "Sequence Group". Allows to use multiple disconnected sequence managers in one room.
 
 
 ## Sequence Touch Switch
 entities.DzhakeHelper/SequenceTouchSwitch.placements.name.normal=Sequence Touch Switch
 entities.DzhakeHelper/SequenceTouchSwitch.attributes.description.group=When all touch switches from same group are activated Sequence blocks will cycle. Two groups means that they will cycle twice.
 entities.DzhakeHelper/SequenceTouchSwitch.attributes.name.groudReset=Reset on ground.
+entities.DzhakeHelper/SequenceTouchSwitch.attributes.description.sequenceGroup=Sequence managers only affect sequence blocks with the same "Sequence Group". Allows to use multiple disconnected sequence managers in one room.
 
 ## Custom Move Block
 entities.DzhakeHelper/CustomMoveBlock.placements.name.up_steer=Custom Move Block (Up, Steerable)
@@ -94,13 +106,16 @@ entities.DzhakeHelper/CustomMoveBlock.attributes.description.acceleration=Block'
 entities.DzhakeHelper/CustomMoveBlock.attributes.description.moveSpeed=Max/Target speed of the block.
 
 
+
 ## Sequence Berry
 entities.DzhakeHelper/SequenceBerry.placements.name.normal=Sequence Berry
 entities.DzhakeHelper/SequenceBerry.placements.name.normal_winged=Sequence Berry (Winged)
+entities.DzhakeHelper/SequenceBlock.attributes.description.sequenceGroup=Sequence managers only affect sequence blocks with the same "Sequence Group". Allows to use multiple disconnected sequence managers in one room.
 
 ## Sequence Switch Block
 entities.DzhakeHelper/SequenceSwitchBlock.placements.name.normal=Sequence Switch Block
 entities.DzhakeHelper/SequenceSwitchBlock.attributes.description.customColors=Hex colors with "#", separeted by commas
+entities.DzhakeHelper/SequenceSwitchBlock.attributes.description.sequenceGroup=Sequence managers only affect sequence blocks with the same "Sequence Group". Allows to use multiple disconnected sequence managers in one room.
 
 ## Custom Decal
 entities.DzhakeHelper/CustomDecal.placements.name.normal=Custom Decal
@@ -153,12 +168,14 @@ entities.DzhakeHelper/PlayerHitboxController.attributes.description.featherHurtb
 
 ## Cycle Sequence Blocks Trigger
 triggers.DzhakeHelper/CycleSequenceBlocksTrigger.placements.name.normal=Cycle Sequence Blocks
+entities.DzhakeHelper/SequenceBlock.attributes.description.sequenceGroup=Sequence managers only affect sequence blocks with the same "Sequence Group". Allows to use multiple disconnected sequence managers in one room.
 
 ## Force Duck Trigger
 triggers.DzhakeHelper/ForceDuckTrigger.placements.name.normal=Force Duck Trigger
 
 ## Set Sequence Blocks Trigger
 triggers.DzhakeHelper/SetSequenceBlocksTrigger.placements.name.normal=Set Sequence Blocks
+entities.DzhakeHelper/SequenceBlock.attributes.description.sequenceGroup=Sequence managers only affect sequence blocks with the same "Sequence Group". Allows to use multiple disconnected sequence managers in one room.
 
 ## Timed Kill Trigger
 triggers.DzhakeHelper/TimedKillTrigger.placements.name.normal=Timed Kill

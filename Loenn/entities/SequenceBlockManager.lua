@@ -13,7 +13,10 @@ local sequenceBlockManager = {
             fieldType = "integer",
             options = colorNames,
             editable = false
-        }
+        },
+        sequenceGroup = {
+            fieldType = "integer",
+        },
     },
 
     name = "DzhakeHelper/SequenceBlockManager",
@@ -27,7 +30,8 @@ local sequenceBlockManager = {
                 everyDash = false,
                 flag = "",
                 cycleWhenFlagOn = false,
-                cycleWhenFlagOff = false
+                cycleWhenFlagOff = false,
+                sequenceGroup = 0,
             },
         },
     },

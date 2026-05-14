@@ -159,6 +159,7 @@ function dzhakeHelper.getSequenceBlockData(i)
         backgroundBlock = true,
         solidDepth = 8990,
         pressedDepth = -10,
+        sequenceGroup = 0,
     }
 end
 
@@ -175,6 +176,9 @@ function dzhakeHelper.getSequenceBlockFieldInfo()
         color = {
             fieldType = "color",
         },
+        sequenceGroup = {
+            fieldType = "integer",
+        }
     }
 end
 

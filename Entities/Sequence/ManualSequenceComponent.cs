@@ -1,6 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
 using Monocle;
-using Microsoft.Xna.Framework;
 
 namespace Celeste.Mod.DzhakeHelper.Entities;
 
@@ -11,6 +10,7 @@ public class ManualSequenceComponent : Component
     public Color pressedColor;
 
     public int Index;
+    public int SequenceGroup;
     public bool Activated = false;
 
     public bool UseCustomColor = false;
@@ -24,6 +24,7 @@ public class ManualSequenceComponent : Component
         this.entity = entity;
 
         Index = data.Int("index");
+        SequenceGroup = data.Int("sequenceGroup");
 
         UseCustomColor = data.Bool("useCustomColor");
         if (UseCustomColor)

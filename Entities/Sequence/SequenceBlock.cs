@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using Celeste.Mod.Entities;
+﻿using Celeste.Mod.Entities;
 using Microsoft.Xna.Framework;
 using Monocle;
+using System.Collections.Generic;
 
 
 namespace Celeste.Mod.DzhakeHelper.Entities
@@ -19,9 +19,10 @@ namespace Celeste.Mod.DzhakeHelper.Entities
         }
 
         public int Index;
+        public int SequenceGroup;
 
         public int BlendIndex;
-        public bool BlendIndexEqualsColorIndex;
+        public bool AutoBlendIndex;
 
         public bool BlockedByPlayer;
 
@@ -33,6 +34,7 @@ namespace Celeste.Mod.DzhakeHelper.Entities
 
         public bool UseCustomColor = false;
 
+        public int TagIndex;
 
         public float Tempo;
 
@@ -80,11 +82,12 @@ namespace Celeste.Mod.DzhakeHelper.Entities
             Collidable = false;
             ID = id;
             Index = data.Int("index");
-            BlendIndexEqualsColorIndex = data.Bool("blendIndexEqualsColorIndex", true);
-            BlendIndex = BlendIndexEqualsColorIndex ? Index : data.Int("blendIndex");
+            SequenceGroup = data.Int("sequenceGroup");
+            AutoBlendIndex = data.Bool("blendIndexEqualsColorIndex", true);
+            BlendIndex = AutoBlendIndex ? (Index + SequenceGroup * 4) : data.Int("blendIndex");
             PressedDepth = data.Int("pressedDepth", 8990);
             SolidDepth = data.Int("solidDepth", -10);
-            
+
             BlockedByPlayer = data.Bool("blockedByPlayer");
             ImagePath = data.Attr("imagePath", "objects/DzhakeHelper/sequenceBlock/");
             BackgroundBlock = data.Bool("backgroundBlock", true);
@@ -96,18 +99,18 @@ namespace Celeste.Mod.DzhakeHelper.Entities
             else
                 switch (Index)
                 {
-                default:
-                    color = Calc.HexToColor("5c5bda");
-                    break;
-                case 1:
-                    color = Calc.HexToColor("ff0051");
-                    break;
-                case 2:
-                    color = Calc.HexToColor("ffd700");
-                    break;
-                case 3:
-                    color = Calc.HexToColor("49dc88");
-                    break;
+                    default:
+                        color = Calc.HexToColor("5c5bda");
+                        break;
+                    case 1:
+                        color = Calc.HexToColor("ff0051");
+                        break;
+                    case 2:
+                        color = Calc.HexToColor("ffd700");
+                        break;
+                    case 3:
+                        color = Calc.HexToColor("49dc88");
+                        break;
                 }
 
             Add(occluder = new LightOcclude());
@@ -124,16 +127,16 @@ namespace Celeste.Mod.DzhakeHelper.Entities
             foreach (StaticMover staticMover in staticMovers)
                 switch (staticMover.Entity)
                 {
-                case Spikes spikes:
-                    spikes.EnabledColor = this.color;
-                    spikes.DisabledColor = PressedColor;
-                    spikes.VisibleWhenDisabled = true;
-                    spikes.SetSpikeColor(this.color);
-                    break;
-                case Spring spring:
-                    spring.DisabledColor = PressedColor;
-                    spring.VisibleWhenDisabled = true;
-                    break;
+                    case Spikes spikes:
+                        spikes.EnabledColor = this.color;
+                        spikes.DisabledColor = PressedColor;
+                        spikes.VisibleWhenDisabled = true;
+                        spikes.SetSpikeColor(this.color);
+                        break;
+                    case Spring spring:
+                        spring.DisabledColor = PressedColor;
+                        spring.VisibleWhenDisabled = true;
+                        break;
                 }
 
             if (group == null)
@@ -181,44 +184,44 @@ namespace Celeste.Mod.DzhakeHelper.Entities
                     bool bottomCollide = CheckForSame(tileX, tileY + 8f);
                     switch (leftCollide)
                     {
-                    case true when (rightCollide && topCollide && bottomCollide):
-                    {
-                        if (!CheckForSame(tileX + 8f, tileY - 8f))
-                            SetImage(tileX, tileY, 3, 0);
-                        else if (!CheckForSame(tileX - 8f, tileY - 8f))
-                            SetImage(tileX, tileY, 3, 1);
-                        else if (!CheckForSame(tileX + 8f, tileY + 8f))
-                            SetImage(tileX, tileY, 3, 2);
-                        else if (!CheckForSame(tileX - 8f, tileY + 8f))
-                            SetImage(tileX, tileY, 3, 3);
-                        else
-                            SetImage(tileX, tileY, 1, 1);
-                        break;
-                    }
-                    case true when (rightCollide && !topCollide && bottomCollide):
-                        SetImage(tileX, tileY, 1, 0);
-                        break;
-                    case true when (rightCollide && topCollide && !bottomCollide):
-                        SetImage(tileX, tileY, 1, 2);
-                        break;
-                    case true when (!rightCollide && topCollide && bottomCollide):
-                        SetImage(tileX, tileY, 2, 1);
-                        break;
-                    case false when (rightCollide && topCollide && bottomCollide):
-                        SetImage(tileX, tileY, 0, 1);
-                        break;
-                    case true when (!rightCollide && !topCollide && bottomCollide):
-                        SetImage(tileX, tileY, 2, 0);
-                        break;
-                    case false when (rightCollide && !topCollide && bottomCollide):
-                        SetImage(tileX, tileY, 0, 0);
-                        break;
-                    case true when (!rightCollide && topCollide && !bottomCollide):
-                        SetImage(tileX, tileY, 2, 2);
-                        break;
-                    case false when (rightCollide && topCollide && !bottomCollide):
-                        SetImage(tileX, tileY, 0, 2);
-                        break;
+                        case true when (rightCollide && topCollide && bottomCollide):
+                            {
+                                if (!CheckForSame(tileX + 8f, tileY - 8f))
+                                    SetImage(tileX, tileY, 3, 0);
+                                else if (!CheckForSame(tileX - 8f, tileY - 8f))
+                                    SetImage(tileX, tileY, 3, 1);
+                                else if (!CheckForSame(tileX + 8f, tileY + 8f))
+                                    SetImage(tileX, tileY, 3, 2);
+                                else if (!CheckForSame(tileX - 8f, tileY + 8f))
+                                    SetImage(tileX, tileY, 3, 3);
+                                else
+                                    SetImage(tileX, tileY, 1, 1);
+                                break;
+                            }
+                        case true when (rightCollide && !topCollide && bottomCollide):
+                            SetImage(tileX, tileY, 1, 0);
+                            break;
+                        case true when (rightCollide && topCollide && !bottomCollide):
+                            SetImage(tileX, tileY, 1, 2);
+                            break;
+                        case true when (!rightCollide && topCollide && bottomCollide):
+                            SetImage(tileX, tileY, 2, 1);
+                            break;
+                        case false when (rightCollide && topCollide && bottomCollide):
+                            SetImage(tileX, tileY, 0, 1);
+                            break;
+                        case true when (!rightCollide && !topCollide && bottomCollide):
+                            SetImage(tileX, tileY, 2, 0);
+                            break;
+                        case false when (rightCollide && !topCollide && bottomCollide):
+                            SetImage(tileX, tileY, 0, 0);
+                            break;
+                        case true when (!rightCollide && topCollide && !bottomCollide):
+                            SetImage(tileX, tileY, 2, 2);
+                            break;
+                        case false when (rightCollide && topCollide && !bottomCollide):
+                            SetImage(tileX, tileY, 0, 2);
+                            break;
                     }
                 }
             }
@@ -234,7 +237,7 @@ namespace Celeste.Mod.DzhakeHelper.Entities
             foreach (SequenceBlock entity in Scene.Tracker.GetEntities<SequenceBlock>())
             {
                 if (entity == this || entity == block || entity.BlendIndex != BlendIndex || (!entity.CollideRect(new Rectangle((int)block.X - 1, (int)block.Y, (int)block.Width + 2, (int)block.Height)) && !entity.CollideRect(new Rectangle((int)block.X, (int)block.Y - 1, (int)block.Width, (int)block.Height + 2))) || group.Contains(entity)) continue;
-                
+
                 group.Add(entity);
                 entity.group = group;
                 FindInGroup(entity);

@@ -1,5 +1,4 @@
-﻿using Celeste.Mod.DzhakeHelper.Entities;
-using Celeste.Mod.Entities;
+﻿using Celeste.Mod.Entities;
 using Microsoft.Xna.Framework;
 
 namespace Celeste.Mod.DzhakeHelper.Triggers
@@ -8,7 +7,7 @@ namespace Celeste.Mod.DzhakeHelper.Triggers
 
     public class CycleSequenceBlocksTrigger(EntityData data, Vector2 offset) : Trigger(data, offset)
     {
-
+        public int SequenceGroup = data.Int("sequnceGroup");
         public int cyclesCount = data.Int("cyclesCount");
 
         private bool triggered;
@@ -16,11 +15,7 @@ namespace Celeste.Mod.DzhakeHelper.Triggers
         public override void OnEnter(Player player)
         {
             if (triggered) return;
-
-            for (int i = 0; i < cyclesCount; i++)
-            {
-                Scene.Tracker.GetEntity<SequenceBlockManager>()?.CycleSequenceBlocks();
-            }
+            Util.CycleSequenceColor(cyclesCount, SequenceGroup);
             triggered = true;
         }
     }
