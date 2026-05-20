@@ -27,6 +27,7 @@ for i, _ in ipairs(dzhakeHelper.colors) do
         onlyMoveIfActive = false,
         pathImagePath = "objects/swapblock/target",
         crossImagePath = "objects/DzhakeHelper/sequenceSwapBlock/",
+        hidePath = false,
     }
     
     for k,v in pairs(data) do sequenceBlock.placements[i].data[k] = v end
@@ -47,7 +48,7 @@ function sequenceBlock.sprite(room, entity)
         table.insert(sprites, cross)
     end
 
-    dzhakeHelper.addTrailSprites(sprites, entity, entity.nodes[1].x or entity.x, entity.nodes[1].y or entity.y, entity.pathImagePath)
+    if not entity.hidePath then dzhakeHelper.addTrailSprites(sprites, entity, entity.nodes[1].x or entity.x, entity.nodes[1].y or entity.y, entity.pathImagePath) end
 
     return sprites
 end

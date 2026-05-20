@@ -1,8 +1,8 @@
 ﻿using Celeste.Mod.Entities;
 using FMOD.Studio;
 using Microsoft.Xna.Framework;
-using System;
 using Monocle;
+using System;
 
 namespace Celeste.Mod.DzhakeHelper.Entities;
 
@@ -32,6 +32,7 @@ public class SequenceSwapBlock : SequenceBlock
 
         public override void Render()
         {
+            if (block.nineSliceTarget is null) return;
             Vector2 position = new Vector2(block.moveRect.X, block.moveRect.Y) + block.blockOffset;
             for (int i = 1; i <= block.blockHeight; ++i)
                 DrawTarget(position + (Vector2.UnitY * i), pathColorPressed);
@@ -60,7 +61,7 @@ public class SequenceSwapBlock : SequenceBlock
     private float maxBackwardSpeed;
     private float returnTimer;
 
-    private readonly MTexture[,] nineSliceTarget;
+    private readonly MTexture[,]? nineSliceTarget;
 
     private EventInstance moveSfx;
     private EventInstance returnSfx;
@@ -73,9 +74,10 @@ public class SequenceSwapBlock : SequenceBlock
     public string CrossImagePath;
     public bool onlyMoveIfActive;
     public bool onlyStartMoveIfActive;
+    public bool hidePath;
 
     public SequenceSwapBlock(EntityData data, Vector2 offset, EntityID id)
-        : base(data,offset,id)
+        : base(data, offset, id)
     {
         start = Position;
         end = data.Nodes[0] + offset;
@@ -91,17 +93,22 @@ public class SequenceSwapBlock : SequenceBlock
         int maxY = (int)MathHelper.Max(Y + Height, end.Y + Height);
         moveRect = new Rectangle(minX, minY, maxX - minX, maxY - minY);
 
+        hidePath = data.Bool("hidePath");
         PathImagePath = data.Attr("pathImagePath", "objects/swapblock/target");
-        MTexture mTexture3 = GFX.Game[PathImagePath];
         CrossImagePath = data.Attr("crossImagePath", "objects/DzhakeHelper/sequenceSwapBlock/");
-        nineSliceTarget = new MTexture[3, 3];
-        for (int i = 0; i < 3; i++)
+        if (!hidePath)
         {
-            for (int j = 0; j < 3; j++)
+            MTexture mTexture3 = GFX.Game[PathImagePath];
+            nineSliceTarget = new MTexture[3, 3];
+            for (int i = 0; i < 3; i++)
             {
-                nineSliceTarget[i, j] = mTexture3.GetSubtexture(new Rectangle(i * 8, j * 8, 8, 8));
+                for (int j = 0; j < 3; j++)
+                {
+                    nineSliceTarget[i, j] = mTexture3.GetSubtexture(new Rectangle(i * 8, j * 8, 8, 8));
+                }
             }
         }
+
         moveParticle = new ParticleType(SwapBlock.P_Move)
         {
             Color = color,
@@ -113,8 +120,8 @@ public class SequenceSwapBlock : SequenceBlock
             Color2 = PressedColor
         };
 
-        ReturnTime = data.Float("returnTime",0.8f);
-        maxForwardSpeed = data.Float("maxForwardSpeedMult",1f) * maxForwardSpeed;
+        ReturnTime = data.Float("returnTime", 0.8f);
+        maxForwardSpeed = data.Float("maxForwardSpeedMult", 1f) * maxForwardSpeed;
         maxBackwardSpeed = data.Float("maxBackwardSpeedMult", 1f) * maxBackwardSpeed;
         onlyStartMoveIfActive = data.Bool("onlyStartMoveIfActive");
         onlyMoveIfActive = data.Bool("onlyMoveIfActive");
@@ -131,7 +138,7 @@ public class SequenceSwapBlock : SequenceBlock
             Image crossPressed = new(GFX.Game[CrossImagePath + "xPressed"]);
             AddCenterSymbol(cross, crossPressed);
         }
-        scene.Add(new PathRenderer(this));
+        if (!hidePath) scene.Add(new PathRenderer(this));
     }
 
     public override void Removed(Scene scene)
@@ -304,7 +311,7 @@ public class SequenceSwapBlock : SequenceBlock
                 #endregion
             }
         }
-        
+
     }
 
     private void MoveParticles(Vector2 normal)
@@ -352,10 +359,10 @@ public class SequenceSwapBlock : SequenceBlock
     {
         int tilesX = (int)(width / 8f);
         int tilesY = (int)(height / 8f);
-        if (Scene is null || Scene is not Level level) return; 
+        if (Scene is null || Scene is not Level level) return;
         if (level.IsInCamera(pos + new Vector2(0f, 0f), 8))
             ninSlice[0, 0].Draw(pos + new Vector2(0f, 0f), Vector2.Zero, color);
-        if (level.IsInCamera(pos + new Vector2(width - 8f, 0f) ,8))
+        if (level.IsInCamera(pos + new Vector2(width - 8f, 0f), 8))
             ninSlice[2, 0].Draw(pos + new Vector2(width - 8f, 0f), Vector2.Zero, color);
         if (level.IsInCamera(pos + new Vector2(0f, height - 8f), 8))
             ninSlice[0, 2].Draw(pos + new Vector2(0f, height - 8f), Vector2.Zero, color);

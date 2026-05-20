@@ -72,6 +72,7 @@ entities.DzhakeHelper/SequenceSwapBlock.attributes.description.pressedDepth=Visu
 entities.DzhakeHelper/SequenceSwapBlock.attributes.description.solidDepth=Visual/update depth of the block in "solid" (active) state.
 entities.DzhakeHelper/SequenceSwapBlock.attributes.description.sequenceGroup=Sequence managers only affect sequence blocks with the same "Sequence Group". Allows to use multiple disconnected sequence managers in one room.
 entities.DzhakeHelper/SequenceSwapBlock.attributes.name.blendIndexEqualsColorIndex=Auto blend index
+entities.DzhakeHelper/SequenceSwapBlock.attributes.description.hidePath=Hides block's path in an 'optimized' way.
 
 ## Sequence Block Manager
 entities.DzhakeHelper/SequenceBlockManager.placements.name.normal=Sequence Block Controller

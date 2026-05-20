@@ -55,7 +55,9 @@ function sequenceZipMover.sprite(room, entity)
     for _, node in ipairs(nodes) do
         local centerNodeX, centerNodeY = node.x + halfWidth, node.y + halfHeight
 
-        local nodeCogSprite = drawableSprite.fromTexture("objects/DzhakeHelper/sequenceZipMover/cog")
+        local imagePath = entity.imagePath
+        if imagePath == "objects/DzhakeHelper/sequenceBlock/" then imagePath = "objects/DzhakeHelper/sequenceZipMover/" end
+        local nodeCogSprite = drawableSprite.fromTexture(imagePath.."cog")
         nodeCogSprite:setColor(color)
 
         nodeCogSprite:setPosition(centerNodeX, centerNodeY)
