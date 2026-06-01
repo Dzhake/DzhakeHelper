@@ -38,7 +38,6 @@ public class SequenceSwitchBlock : Solid
 
     public SequenceSwitchBlock(EntityData data, Vector2 offset) : base(data.Position + offset, data.Width, data.Height, true)
     {
-
         SurfaceSoundIndex = SurfaceIndex.ZipMover;
 
         if (data.Bool("blue"))
@@ -96,8 +95,6 @@ public class SequenceSwitchBlock : Solid
 
         singleColor = indexes.Count == 1;
 
-        NextColor(indexes[nextColorIndex], true);
-
         Add(new LightOcclude());
         Add(new SoundSource(SFX.game_01_console_static_loop)
         {
@@ -118,6 +115,12 @@ public class SequenceSwitchBlock : Solid
 
         AllowDashOnTop = data.Bool("allowsDashOnTop");
         SequenceGroup = data.Int("sequenceGroup");
+    }
+
+    public override void Awake(Scene scene)
+    {
+        NextColor(indexes[nextColorIndex], true);
+        base.Awake(scene);
     }
 
     public override void Render()
@@ -263,6 +266,7 @@ public class SequenceSwitchBlock : Solid
                 nextColorIndex = 0;
 
             SequenceBlockManager? manager = null;
+
             foreach (Entity? managerEnt in Scene.Tracker.GetEntities<SequenceBlockManager>())
             {
                 if (managerEnt is SequenceBlockManager manager2 && manager2.SequenceGroup == SequenceGroup)
