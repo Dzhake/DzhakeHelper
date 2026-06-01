@@ -81,7 +81,7 @@ namespace Celeste.Mod.DzhakeHelper.Entites
         private bool staminaBased;
 
         private float delay;
-
+        private bool OldBehaviour;
 
 
 
@@ -97,6 +97,7 @@ namespace Celeste.Mod.DzhakeHelper.Entites
             useAnyway = data.Bool("useAnyway");
             staminaBased = data.Bool("staminaBased");
             delay = data.Float("delay");
+            OldBehaviour = data.Bool("oldBehaviour", true);
 
             string str = "objects/DzhakeHelper/freezeRefill/";
             Add(outline = new Image(GFX.Game[str + "outline"]));
@@ -108,11 +109,13 @@ namespace Celeste.Mod.DzhakeHelper.Entites
             sprite.CenterOrigin();
             Add(flash = new Sprite(GFX.Game, str + "flash"));
             flash.Add("flash", "", 0.05f);
-            flash.OnFinish = delegate {
+            flash.OnFinish = delegate
+            {
                 flash.Visible = false;
             };
             flash.CenterOrigin();
-            Add(wiggler = Wiggler.Create(1f, 4f, delegate (float v) {
+            Add(wiggler = Wiggler.Create(1f, 4f, delegate (float v)
+            {
                 sprite.Scale = flash.Scale = Vector2.One * (1f + (v * 0.2f));
             }));
             Add(new MirrorReflection());
@@ -196,39 +199,35 @@ namespace Celeste.Mod.DzhakeHelper.Entites
                 Audio.Play("event:/game/general/diamond_touch", Position);
                 Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
                 Collidable = false;
-                Add(new Coroutine(RefillRoutine(player)));
+                var coroutine = new Coroutine(RefillRoutine(player));
+                Add(coroutine);
+                if (!OldBehaviour) coroutine.Update();
+
                 respawnTimer = respawnTime;
             }
         }
 
         private IEnumerator RefillRoutine(Player player)
         {
-            Add(new Coroutine(FreezeDelay()));
+            if (OldBehaviour || delay != 0)
+                yield return delay;
+            Celeste.Freeze(freezeTime);
 
             yield return null;
             level.Shake();
             sprite.Visible = flash.Visible = false;
             if (!oneUse)
-            {
                 outline.Visible = true;
-            }
 
             Depth = 8999;
-            yield return 0.05f;
+            //yield return 0.05f;
             float num = player.Speed.Angle();
             level.ParticlesFG.Emit(P_Shatter, 5, Position, Vector2.One * 4f, num - ((float)Math.PI / 2f));
             level.ParticlesFG.Emit(P_Shatter, 5, Position, Vector2.One * 4f, num + ((float)Math.PI / 2f));
             SlashFx.Burst(Position, num);
-        }
 
-        private IEnumerator FreezeDelay()
-        {
-            yield return delay;
-            Celeste.Freeze(freezeTime);
             if (oneUse)
-            {
                 RemoveSelf();
-            }
         }
     }
 }
